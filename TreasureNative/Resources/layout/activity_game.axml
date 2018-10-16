@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <android.webkit.WebView
+        android:id="@+id/game_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/action_buttons" />
+    <LinearLayout
+        android:id="@+id/action_buttons"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true">
+        <Button
+            android:id="@+id/action_left"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/left" />
+        <Button
+            android:id="@+id/action_up"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/up" />
+        <Button
+            android:id="@+id/action_down"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/down" />
+        <Button
+            android:id="@+id/action_right"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/right" />
+    </LinearLayout>
+</RelativeLayout>

@@ -1,0 +1,1 @@
+This is game about treasure hunting, exploration and mapping!
