@@ -15,6 +15,9 @@ namespace TreasureNative.GameLogic
 
         public GameParameters gameParameters;
 
+        //public delegate void EventHandl(object sender, EventArgs args);
+        public event EventHandler OnTurnDone;
+
         public Game(GameParameters gameParameters)
         {
             this.gameParameters = gameParameters;
@@ -50,7 +53,7 @@ namespace TreasureNative.GameLogic
                         AddHistory(player.playerHelper,r);                       
                     }
                     while (r == null);
-                    controller.UseResult();
+                    OnTurnDone(this,new TurnDoneEventArgs());
                     winner = field.CheckWin();
                     if (winner != null)
                         break;

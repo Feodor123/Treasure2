@@ -16,11 +16,6 @@ namespace TreasureNative.GameLogic
             this.activity = activity;
         }
 
-        public void UseResult()
-        {
-            activity.RunOnUiThread(() => activity.UseResult());
-        }
-
         public virtual PlayerAction GetAction(CancellationToken cancellationToken, List<TurnInfo>[] allTurns)
         {
             cancellationToken.ThrowIfCancellationRequested();

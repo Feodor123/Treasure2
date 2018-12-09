@@ -19,11 +19,6 @@ namespace TreasureNative.UserInterface
 
         private GameActivity activity;
 
-        public void UseResult()
-        {
-            activity.RunOnUiThread(() => activity.UseResult());
-        }
-
         public PlayerAction GetAction(CancellationToken cancellationToken, List<TurnInfo>[] turns)
         {
             while (!actionPostedEvent.WaitOne(100))

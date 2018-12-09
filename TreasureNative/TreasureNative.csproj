@@ -54,6 +54,7 @@
     <Reference Include="Mono.Android" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GameLogic\TurnDoneEventArgs.cs" />
     <Compile Include="UserInterface\ActivityBridge.cs" />
     <Compile Include="GameLogic\IPlayerController.cs" />
     <Compile Include="GameLogic\Enums.cs" />

@@ -41,7 +41,7 @@ namespace TreasureNative.UserInterface
         PlayerHelper[] players;
 
         CancellationTokenSource cancellationTokenSource;
-        Thread gameThread;
+        Thread gameThread;        
 
         View root;
         WebView historyView;    
@@ -54,6 +54,7 @@ namespace TreasureNative.UserInterface
             SetContentView(Resource.Layout.loading);
 
             game = ActivityBridge.game;
+            game.OnTurnDone += (sender,args) => { RunOnUiThread(() => UseResult(sender,args)); };
             players = game.gameParameters.Players;
 
             foreach (var p in players)
@@ -152,7 +153,7 @@ namespace TreasureNative.UserInterface
             historyView.ScrollBy(0, 10005000);
         }
 
-        public void UseResult()
+        public void UseResult(object sender, EventArgs e)
         {
             PrepareResultRead((currentPlayer + 1) % players.Length);
         }

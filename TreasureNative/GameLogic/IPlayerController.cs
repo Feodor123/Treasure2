@@ -9,6 +9,5 @@ namespace TreasureNative.GameLogic
         PlayerAction GetAction(CancellationToken cancellationToken, List<TurnInfo>[] turns);
         void Initialize(GameActivity activity);
         void PerformAction(PlayerAction action);
-        void UseResult();
     }
 }
