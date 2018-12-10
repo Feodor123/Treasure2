@@ -1,19 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using TreasureNative.UserInterface;
 
-namespace TreasureNative.GameLogic
+namespace Treasure
 {
     public class BotController : IPlayerController
     {
         private GameParameters gameParameters;
-        private GameActivity activity;
 
-        public BotController(GameParameters gameParameters,GameActivity activity)
+        public BotController(GameParameters gameParameters)
         {
             this.gameParameters = gameParameters;
-            this.activity = activity;
         }
 
         public virtual PlayerAction GetAction(CancellationToken cancellationToken, List<TurnInfo>[] allTurns)
@@ -23,7 +20,5 @@ namespace TreasureNative.GameLogic
             return PlayerAction.RandomGo();
         }
         public void PerformAction(PlayerAction action) { }//usual bot don't react on user's clicks
-
-        public void Initialize(GameActivity activity) { }
     }
 }

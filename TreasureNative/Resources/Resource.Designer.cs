@@ -9,9 +9,9 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: global::Android.Runtime.ResourceDesignerAttribute("TreasureNative.Resource", IsApplication=true)]
+[assembly: global::Android.Runtime.ResourceDesignerAttribute("TreasureAndroid.Resource", IsApplication=true)]
 
-namespace TreasureNative
+namespace TreasureAndroid
 {
 	
 	

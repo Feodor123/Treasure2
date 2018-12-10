@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TreasureNative.GameLogic
+namespace Treasure
 {
     public class GameParameters
     {
@@ -10,9 +10,5 @@ namespace TreasureNative.GameLogic
         public int SwampCount { get; set; }
         public int SwampSize { get; set; }
         public PlayerHelper[] Players { get; set; }
-
-        public void Dispose() { }
-
-        public IntPtr Handle => throw new NotImplementedException();
     }
 }

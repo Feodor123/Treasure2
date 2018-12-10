@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TreasureNative.GameLogic
+namespace Treasure
 {
     public class Tile
     {

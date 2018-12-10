@@ -1,4 +1,4 @@
-﻿namespace TreasureNative.GameLogic
+﻿namespace Treasure
 {
     public enum TerrainType
     {

@@ -1,6 +1,6 @@
-﻿using TreasureNative.GameLogic;
+﻿using Treasure;
 
-namespace TreasureNative.UserInterface
+namespace TreasureAndroid
 {
     static class ActivityBridge
     {

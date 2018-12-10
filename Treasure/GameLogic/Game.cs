@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace TreasureNative.GameLogic
+namespace Treasure
 {
     public class Game
     {
@@ -53,7 +53,7 @@ namespace TreasureNative.GameLogic
                         AddHistory(player.playerHelper,r);                       
                     }
                     while (r == null);
-                    OnTurnDone(this,new TurnDoneEventArgs());
+                    OnTurnDone.Invoke(this,new TurnDoneEventArgs());
                     winner = field.CheckWin();
                     if (winner != null)
                         break;

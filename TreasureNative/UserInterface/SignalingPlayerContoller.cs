@@ -1,23 +1,16 @@
 ﻿using Android.App;
 using System.Collections.Generic;
 using System.Threading;
-using TreasureNative.GameLogic;
+using Treasure;
 
-namespace TreasureNative.UserInterface
+namespace TreasureAndroid
 {
     public class SignalingPlayerContoller : IPlayerController
     {
 
-        public void Initialize(GameActivity activity)
-        {
-            this.activity = activity;
-        }
-
         private EventWaitHandle actionPostedEvent = new ManualResetEvent(false);
 
         private PlayerAction action;
-
-        private GameActivity activity;
 
         public PlayerAction GetAction(CancellationToken cancellationToken, List<TurnInfo>[] turns)
         {

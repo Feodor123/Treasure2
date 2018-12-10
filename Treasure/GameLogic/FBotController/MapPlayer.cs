@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace TreasureNative.GameLogic.FBotController
+namespace Treasure.FBotController
 {
     /*
     class MapPlayer

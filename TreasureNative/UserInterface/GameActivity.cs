@@ -15,9 +15,9 @@ using Android.Views;
 using Android.Webkit;
 using Android.Widget;
 
-using TreasureNative.GameLogic;
+using Treasure;
 
-namespace TreasureNative.UserInterface
+namespace TreasureAndroid
 {
     [Activity(ConfigurationChanges = Android.Content.PM.ConfigChanges.Orientation | Android.Content.PM.ConfigChanges.ScreenSize)]
     public class GameActivity : Activity
@@ -54,11 +54,8 @@ namespace TreasureNative.UserInterface
             SetContentView(Resource.Layout.loading);
 
             game = ActivityBridge.game;
-            game.OnTurnDone += (sender,args) => { RunOnUiThread(() => UseResult(sender,args)); };
+            game.OnTurnDone += (sender,args) => RunOnUiThread(() => UseResult(sender,args));
             players = game.gameParameters.Players;
-
-            foreach (var p in players)
-                p.parameters.Controller.Initialize(this);
             
             cancellationTokenSource = new CancellationTokenSource();
             gameThread = new Thread(() =>
@@ -94,15 +91,15 @@ namespace TreasureNative.UserInterface
 
             SetContentView(Resource.Layout.activity_game);
 
-            FindViewById<Button>(Resource.Id.action_up).Click += (s, a) => PerformPlayerAction(new PlayerAction(GameLogic.Action.Go, Direction.Up));
-            FindViewById<Button>(Resource.Id.action_down).Click += (s, a) => PerformPlayerAction(new PlayerAction(GameLogic.Action.Go, Direction.Down));
-            FindViewById<Button>(Resource.Id.action_left).Click += (s, a) => PerformPlayerAction(new PlayerAction(GameLogic.Action.Go, Direction.Left));
-            FindViewById<Button>(Resource.Id.action_right).Click += (s, a) => PerformPlayerAction(new PlayerAction(GameLogic.Action.Go, Direction.Right));
+            FindViewById<Button>(Resource.Id.action_up).Click += (s, a) => PerformPlayerAction(new PlayerAction(Treasure.Action.Go, Direction.Up));
+            FindViewById<Button>(Resource.Id.action_down).Click += (s, a) => PerformPlayerAction(new PlayerAction(Treasure.Action.Go, Direction.Down));
+            FindViewById<Button>(Resource.Id.action_left).Click += (s, a) => PerformPlayerAction(new PlayerAction(Treasure.Action.Go, Direction.Left));
+            FindViewById<Button>(Resource.Id.action_right).Click += (s, a) => PerformPlayerAction(new PlayerAction(Treasure.Action.Go, Direction.Right));
 
-            FindViewById<Button>(Resource.Id.action_up).LongClick += (s, a) => PerformPlayerAction(new PlayerAction(GameLogic.Action.Shoot, Direction.Up));
-            FindViewById<Button>(Resource.Id.action_down).LongClick += (s, a) => PerformPlayerAction(new PlayerAction(GameLogic.Action.Shoot, Direction.Down));
-            FindViewById<Button>(Resource.Id.action_left).LongClick += (s, a) => PerformPlayerAction(new PlayerAction(GameLogic.Action.Shoot, Direction.Left));
-            FindViewById<Button>(Resource.Id.action_right).LongClick += (s, a) => PerformPlayerAction(new PlayerAction(GameLogic.Action.Shoot, Direction.Right));
+            FindViewById<Button>(Resource.Id.action_up).LongClick += (s, a) => PerformPlayerAction(new PlayerAction(Treasure.Action.Shoot, Direction.Up));
+            FindViewById<Button>(Resource.Id.action_down).LongClick += (s, a) => PerformPlayerAction(new PlayerAction(Treasure.Action.Shoot, Direction.Down));
+            FindViewById<Button>(Resource.Id.action_left).LongClick += (s, a) => PerformPlayerAction(new PlayerAction(Treasure.Action.Shoot, Direction.Left));
+            FindViewById<Button>(Resource.Id.action_right).LongClick += (s, a) => PerformPlayerAction(new PlayerAction(Treasure.Action.Shoot, Direction.Right));
 
             historyView = FindViewById<WebView>(Resource.Id.game_text);
             root = FindViewById(Resource.Id.root);

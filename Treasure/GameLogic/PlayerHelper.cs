@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using TreasureNative.GameLogic;
 
-namespace TreasureNative.GameLogic
+namespace Treasure
 {
     public class PlayerHelper
     {

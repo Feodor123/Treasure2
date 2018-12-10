@@ -15,7 +15,7 @@ using Android.Views;
 using Android.Webkit;
 using Android.Widget;
 
-namespace TreasureNative.UserInterface
+namespace TreasureAndroid
 {
     [Activity(Label = "GameOverActivity")]
     public class GameOverActivity : Activity

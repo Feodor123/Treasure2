@@ -10,7 +10,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 
-namespace TreasureNative.UserInterface
+namespace TreasureAndroid
 {
     [Activity(MainLauncher = true)]
     public class MainActivity : Activity

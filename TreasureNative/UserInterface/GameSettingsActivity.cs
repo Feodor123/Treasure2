@@ -9,9 +9,9 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-using TreasureNative.GameLogic;
+using Treasure;
 
-namespace TreasureNative.UserInterface
+namespace TreasureAndroid
 {
     [Activity(Label = "GameSettingsActivity")]
     public class GameSettingsActivity : Activity, SeekBar.IOnSeekBarChangeListener
