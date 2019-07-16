@@ -8,7 +8,6 @@
         Swamp,
         Hole,
         Home,
-        Bridge,
     }
 
     public enum BorderType
@@ -53,12 +52,6 @@
     public enum StuffType
     {
         Treasure,
-    }
-
-    public enum State
-    {
-        None = 0,
-        OnBridge = 1,
     }
 
     public enum Orientation

@@ -40,19 +40,16 @@ namespace Treasure
                 foreach (var player in players)
                 {
 
-                    cancellationToken.ThrowIfCancellationRequested();
-                    player.playerHelper.actionHistory.Add(new TurnInfo(player.actions,new List<TileInfo>()));//actions - all his dies, TileInfo list is empty because he don't move
+                    cancellationToken.ThrowIfCancellationRequested();                    
                     var controller = player.playerHelper.parameters.Controller;
                     List<TurnInfo>[] allTurns = players.Select(_ => _.playerHelper.actionHistory).ToArray();
-                    TurnInfo r = null;
+                    PlayerAction m;
                     do
                     {
                         cancellationToken.ThrowIfCancellationRequested();
-                        var m = controller.GetAction(cancellationToken, allTurns);
-                        r = field.Update(player, m);
-                        AddHistory(player.playerHelper,r);                       
+                        m = controller.GetAction(cancellationToken, allTurns);  
                     }
-                    while (r == null);
+                    while (!field.Update(player, m));
                     OnTurnDone.Invoke(this,new TurnDoneEventArgs());
                     winner = field.CheckWin();
                     if (winner != null)
@@ -60,12 +57,6 @@ namespace Treasure
                 }
             }
             return winner;
-        }
-
-        private void AddHistory(PlayerHelper playerHelper, TurnInfo turnInfo)
-        {
-            playerHelper.actionHistory.RemoveAt(playerHelper.actionHistory.Count - 1);
-            playerHelper.actionHistory.Add(turnInfo);
         }
     }
 }

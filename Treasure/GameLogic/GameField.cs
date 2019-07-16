@@ -36,6 +36,7 @@ namespace Treasure
         private Tile[] holes;
         private bool through;
         private Random rnd;
+        private Player currentPlayer;
         public Player[] players;
         public GameField(int width, int height, int portalCount, int swampCount, int swampSize, int bridgeCount, bool through, Player[] players,Random rnd)
         {
@@ -73,8 +74,7 @@ namespace Treasure
                 count++;
                 tiles = new Tile[width, height];
                 acceptable = GenerateField() &&
-                GenerateRiver(rnd) &&
-                GenerateBridge(bridgeCount) && 
+                GenerateRiver(rnd) && 
                 GenerateSwamps(rnd, swampSize, swampCount) &&
                 GenerateHoles(rnd, portalCount) &&
                 GenerateHomes(rnd, players) &&
@@ -377,7 +377,7 @@ namespace Treasure
                         Point p1 = new Point(x, y);
                         Point p2 = (p1 + directions[d]).Mod(width, height);
                         BorderType type = BorderType.Empty;
-                        if (rnd.NextDouble() < chance && !(this[p1].terrainType == TerrainType.Swamp && this[p2].terrainType == TerrainType.Swamp) && !((this[p1].terrainType == TerrainType.Water || this[p1].terrainType == TerrainType.Bridge) && (this[p2].terrainType == TerrainType.Water || this[p2].terrainType == TerrainType.Bridge)))
+                        if (rnd.NextDouble() < chance && !(this[p1].terrainType == TerrainType.Swamp && this[p2].terrainType == TerrainType.Swamp) && !(this[p1].terrainType == TerrainType.Water && this[p2].terrainType == TerrainType.Water))
                         {
                             type = BorderType.BreakableWall;
                         }
@@ -412,60 +412,18 @@ namespace Treasure
                 p = new Point(rnd.Next(width), rnd.Next(height));
                 i++;
             }
-            while (this[p].terrainType != TerrainType.Field && this[p].terrainType != TerrainType.Bridge && i < AttemptCount);
+            while (this[p].terrainType != TerrainType.Field  && i < AttemptCount);
             if (i == AttemptCount)
                 return false;
             Stuff treasure = new Stuff(StuffType.Treasure);
-            if (this[p].terrainType == TerrainType.Bridge)
-                treasure.state = State.OnBridge;
             this[p].stuff.Add(treasure);
             treasurePos = p;
             return true;
-        }
+        }        
 
-        private bool GenerateBridge(int count)
+        private Point CheckGo(Point start, Direction direction)
         {
-            List<Tile> riverList = river.ToList();
-            for (int i = 0; i < bridgeCount; i++)
-            {
-                var v = GetRiverTile(riverList);
-                if (v == null)
-                    return false;
-                buildBridge(v);
-            }
-            return true;
-
-            Tuple<Point, Orientation> GetRiverTile(List<Tile> river)
-            {
-                while (river.Count > 0)
-                {
-                    Tile t = river[rnd.Next(river.Count)];
-                    river.Remove(t);
-                    if ((GetTileByDir(t.position, Direction.Up).terrainType == TerrainType.Water || GetTileByDir(t.position, Direction.Up).terrainType == TerrainType.Bridge)
-                        && (GetTileByDir(t.position, Direction.Down).terrainType == TerrainType.Water || GetTileByDir(t.position, Direction.Down).terrainType == TerrainType.Bridge))
-                    {
-                        return new Tuple<Point, Orientation>(t.position, Orientation.Horisontal);
-                    }
-                    if ((GetTileByDir(t.position, Direction.Left).terrainType == TerrainType.Water || GetTileByDir(t.position, Direction.Left).terrainType == TerrainType.Bridge)
-                        && (GetTileByDir(t.position, Direction.Right).terrainType == TerrainType.Water || GetTileByDir(t.position, Direction.Right).terrainType == TerrainType.Bridge))
-                    {
-                        return new Tuple<Point, Orientation>(t.position, Orientation.Vertical);
-                    }
-                }
-                return null;
-            }
-
-            void buildBridge(Tuple<Point, Orientation> tuple)
-            {
-                Tile tile = this[tuple.Item1];
-                tile.terrainType = TerrainType.Bridge;
-                tile.orientation = tuple.Item2;
-            }
-        }
-
-        private Point CheckGo(Point start, Direction direction)//не учитывает "верха" мостов, так как если с него спрыгнуть, то будет аналогично реке, а полагаться на него нельзя, так как любой пироман может его сломать (ну, не всегда...)
-        {
-            if (this[start].walls[direction] != BorderType.Empty || (this[start].terrainType == TerrainType.Bridge && Parallel(direction, this[start].orientation)))
+            if (this[start].walls[direction] != BorderType.Empty)
             {
                 return start;
             }
@@ -482,8 +440,7 @@ namespace Treasure
                 case TerrainType.Swamp:
                     return start;
                 case TerrainType.Water:
-                case TerrainType.Bridge:
-                    for (int i = 0; i < 2; i++)
+                    for (int i = 0; i < RiverFlow; i++)
                     {
                         if (this[p].LastRiverTile)
                         {
@@ -584,22 +541,24 @@ namespace Treasure
 
         #region Player action handling
 
-        public TurnInfo Update(Player player, PlayerAction motion)
+        public bool Update(Player player, PlayerAction motion)
         {
-            TurnInfo tf;
+            currentPlayer = player;
+            bool b;
             switch (motion.action)
             {
                 case Action.Go:
-                    tf = Go(player, motion);
+                    b = Go(player, motion);
                     break;
                 case Action.Shoot:
-                    tf = Shoot(player, motion);
+                    b = Shoot(player, motion);
                     break;
                 default:
                     throw new Exception();
             }
-            player.actions = new List<PlayerAction>();
-            return tf;
+            if (b)
+                player.playerHelper.actionHistory.Add(new TurnInfo());
+            return b;
         }
 
         /// <summary>
@@ -609,27 +568,27 @@ namespace Treasure
         /// <param name="player">player, who performs action</param>
         /// <param name="direction">direction of move</param>
         /// <returns>Result of action</returns>
-        private TurnInfo Go(Player player, PlayerAction action)
+        private bool Go(Player player, PlayerAction action)
         {
-            player.actions.Add(action);
+            var tf = player.playerHelper.actionHistory[player.playerHelper.actionHistory.Count - 1];
             var direction = action.direction;
             List<TileInfo> tilesInfo = new List<TileInfo>();
-            if (this[player.position].walls[direction] != BorderType.Empty || ((player.state & State.OnBridge) == 0 && this[player.position].terrainType == TerrainType.Bridge && Parallel(direction, this[player.position].orientation)))
+            if (this[player.position].walls[direction] != BorderType.Empty)
             {
                 if (this[player.position].walls[direction] == BorderType.Grate)
                     tilesInfo.Add(new TileInfo(MoveResult.Grate));
                 else
-                    tilesInfo.Add(new TileInfo(MoveResult.Wall));               
-                return new TurnInfo(player.actions, tilesInfo);
+                    tilesInfo.Add(new TileInfo(MoveResult.Wall));
+                tf.actions.Add(new ActionInfo(action, tilesInfo));
+                return true;
             }
             Point p = (player.position + directions[direction]).Mod(width,height);
             Tile t = this[p];
 
             // move player and check if somebody was there; Kill him if so
-            void MovePlayer(Point pos,State state)
+            void MovePlayer(Point pos)
             {
                 player.position = pos;
-                player.state = state;
                 CheckPlayerCollision(player);
                 CheckStuff();
             }
@@ -644,14 +603,14 @@ namespace Treasure
             {
                 case TerrainType.Field:
                     tilesInfo.Add(new TileInfo(MoveResult.Field));
-                    MovePlayer(p,State.None);
+                    MovePlayer(p);
                     break;
                 case TerrainType.Hole:
                     tilesInfo.Add(new TileInfo(MoveResult.Hole, t.intParam));
-                    MovePlayer(p, State.None);
+                    MovePlayer(p);
                     t = holes[t.intParam % holes.Length];
                     tilesInfo.Add(new TileInfo(MoveResult.Hole, t.intParam));
-                    MovePlayer(t.position, State.None);
+                    MovePlayer(t.position);
                     break;
                 case TerrainType.Home:
                     if (t == player.home)
@@ -659,15 +618,14 @@ namespace Treasure
                         player.UpdateBullets();
                     }
                     tilesInfo.Add(new TileInfo(MoveResult.Home, t.intParam));
-                    MovePlayer(p, State.None);
+                    MovePlayer(p);
                     break;
                 case TerrainType.Swamp:
                     tilesInfo.Add(new TileInfo(MoveResult.Swamp));
                     break;
                 case TerrainType.Water:
-                case TerrainType tt when (tt == TerrainType.Bridge && !Parallel(direction, t.orientation)):
                     tilesInfo.Add(new TileInfo(MoveResult.Water));
-                    MovePlayer(p, State.None);
+                    MovePlayer(p);
                     for (int i = 0; i < RiverFlow; i++)
                     {
                         if (this[p].LastRiverTile)
@@ -679,56 +637,48 @@ namespace Treasure
                         {
                             p = this[p].tileParam.position;
                             tilesInfo.Add(new TileInfo(MoveResult.Water));
-                            MovePlayer(p, State.None);
+                            MovePlayer(p);
                         }
                     }
-                    break;
-                case TerrainType tt when (tt == TerrainType.Bridge && Parallel(direction, t.orientation)):
-                    tilesInfo.Add(new TileInfo(MoveResult.Field));
-                    MovePlayer(p, State.OnBridge);
-                    player.state |= State.OnBridge;
                     break;
                 default:
                     throw new Exception();
             }
-            return new TurnInfo(player.actions, tilesInfo);
+            tf.actions.Add(new ActionInfo(action, tilesInfo));
+            return true;
         }       
 
-        private TurnInfo Shoot(Player player, PlayerAction action)
+        private bool Shoot(Player player, PlayerAction action)
         {
-            player.actions.Add(action);
+            var tf = player.playerHelper.actionHistory[player.playerHelper.actionHistory.Count - 1];
             var direction = action.direction;
             if (player.bulletCount == 0)
-                return null;
+                return false;
             player.bulletCount--;
             if (player.position == player.home.position)
                 player.UpdateBullets();
             action.intParam = player.bulletCount;//bullet count reported for moment BEFORE self-killing
             Point p = player.position;
-            if (this[p].terrainType == TerrainType.Bridge && (player.state & State.OnBridge) == 0 && Parallel(direction, this[p].orientation))
+            for (int i = 0; true; i++)
             {
-                BreakBridge(p);
-            }
-            else
-                for (int i = 0; true; i++)
+                if (i != 0 && players.Count(_ => _.position == p) > 0)
                 {
-                    if (i != 0 && players.Count(_ => _.position == p) > 0)
-                    {
-                        KillPlayer(players.First(_ => _.position == p));
-                        break;
-                    }
-                    if (this[p].walls[direction] != BorderType.Empty)
-                    {
-                        BreakWall(p, direction);
-                        break;
-                    }
-                    p = (p + directions[direction]).Mod(width, height);
+                    KillPlayer(players.First(_ => _.position == p));
+                    break;
                 }
+                if (this[p].walls[direction] != BorderType.Empty)
+                {
+                    BreakWall(p, direction);
+                    break;
+                }
+                p = (p + directions[direction]).Mod(width, height);
+            }
 
             if (player.position == player.home.position)//again, if we was killed
                 player.UpdateBullets();
 
-            return new TurnInfo(player.actions,new List<TileInfo>());
+            tf.actions.Add(new ActionInfo(action,new List<TileInfo>()));
+            return true;
         }
 
         public Player CheckWin()
@@ -751,7 +701,7 @@ namespace Treasure
 
         private List<Stuff> TakeStuff(Player player)
         {
-            List<Stuff> stuff = this[player.position].stuff.Where(_ => _.state == player.state).ToList();
+            List<Stuff> stuff = this[player.position].stuff.ToList();
             this[player.position].stuff = new List<Stuff>();
             foreach (var st in stuff)
             {
@@ -766,42 +716,31 @@ namespace Treasure
 
         private void CheckPlayerCollision(Player player)
         {
-            var coll = players.Where(_ => _.position == player.position && _ != player && _.state == player.state);
+            var coll = players.Where(_ => _.position == player.position && _ != player);
             if (coll.Count() > 0)
                 KillPlayer(coll.Single());
         }
 
         private void KillPlayer(Player player)
         {
-            player.actions.Add(new PlayerAction(Action.Die,Direction.None));
             player.UpdateBullets();
-            this[player.position].DropStuff(player.stuff,player.state);
+            this[player.position].DropStuff(player.stuff);
             player.stuff.Clear();
             player.position = player.home.position;
             CheckPlayerCollision(player);
-            TakeStuff(player);
+            player.playerHelper.actionHistory.Last().actions.Add(ActionInfo.DieAction(new TileInfo(MoveResult.Home, TakeStuff(player))));
         }
 
         private bool HavePoint(Point p)
         {
             return p.X >= 0 && p.X < width && p.Y >= 0 && p.Y < height;
-        }
-
-        private void BreakBridge(Point p)
-        {
-            foreach (var pl in players)
-                if (pl.position == p)
-                    KillPlayer(pl);
-            foreach (var st in this[p].stuff)
-                st.state &= ~State.OnBridge;
-            this[p].terrainType = TerrainType.Water;
-        }
-
-        #endregion
+        }      
 
         private bool Parallel(Direction dir,Orientation or)
         {
             return ((or == Orientation.Horisontal && (dir == Direction.Left || dir == Direction.Right)) || (or == Orientation.Vertical && (dir == Direction.Up || dir == Direction.Down)));
         }
+
+        #endregion
     }
 }

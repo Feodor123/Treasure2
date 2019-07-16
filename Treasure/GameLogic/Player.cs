@@ -29,8 +29,6 @@ namespace Treasure
         public int bulletCount = maxBulletCount;
         public int homeBulletCount = startHomeBulletCount;
         public PlayerHelper playerHelper;
-        public State state;
-        public List<PlayerAction> actions = new List<PlayerAction>();
 
         public Player(PlayerHelper playerHelper)
         {

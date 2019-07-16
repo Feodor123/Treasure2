@@ -9,9 +9,8 @@ namespace Treasure
     {
         public StuffType type;
         public int count;
-        public State state;
 
-        public Stuff(StuffType type, int count = 1, State state = State.None)
+        public Stuff(StuffType type, int count = 1)
         {
             this.type = type;
             this.count = count;

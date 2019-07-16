@@ -29,15 +29,14 @@ namespace Treasure
         {
             get
             {
-                return (terrainType == TerrainType.Water || terrainType == TerrainType.Bridge) && tileParam == null;
+                return terrainType == TerrainType.Water && tileParam == null;
             }
         }
 
-        public void DropStuff(List<Stuff> drop,State state)
+        public void DropStuff(List<Stuff> drop)
         {
             foreach(var st in drop)
             {
-                st.state = state;
                 Stuff toAddCount = stuff.Find(_ => _.type == st.type);
                 if (toAddCount == null)
                     stuff.Add(st);
