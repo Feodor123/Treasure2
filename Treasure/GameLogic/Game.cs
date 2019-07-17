@@ -10,6 +10,7 @@ namespace Treasure
         private readonly Player[] players;
         private readonly IPlayerController[] playerControllers;
         private readonly Random rnd;
+        private readonly int seed;
 
         private GameField field;
 
@@ -21,7 +22,17 @@ namespace Treasure
         public Game(GameParameters gameParameters)
         {
             this.gameParameters = gameParameters;
-            rnd = new Random();
+            seed = (new Random()).Next();
+            rnd = new Random(seed);
+            players = gameParameters.Players.Select(_ => new Player(_)).ToArray();
+            playerControllers = gameParameters.Players.Select(_ => _.parameters.Controller).ToArray();
+        }
+
+        public Game(GameParameters gameParameters, int seed)
+        {
+            this.gameParameters = gameParameters;
+            this.seed = seed;
+            rnd = new Random(seed);
             players = gameParameters.Players.Select(_ => new Player(_)).ToArray();
             playerControllers = gameParameters.Players.Select(_ => _.parameters.Controller).ToArray();
         }
