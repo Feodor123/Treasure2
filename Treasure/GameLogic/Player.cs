@@ -20,7 +20,6 @@ namespace Treasure
             }
         }
 
-        public int colorNum;
         public List<Stuff> stuff = new List<Stuff>();
         public const int maxBulletCount = 3;
         public const int startHomeBulletCount = 20;
