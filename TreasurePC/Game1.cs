@@ -1,24 +1,44 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Treasure;
 
 namespace TreasurePC
 {
-    public class Game1 : Game
+    public class Game1 : Microsoft.Xna.Framework.Game
     {
         Treasure.Game game;
 
         Texture2D atlasTexture;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        int a = 64;
         
 
         public Game1()
         {
+            game = new Treasure.Game(new GameParameters()
+            {
+                FieldWidth = 10,
+                FieldHeight = 10,
+                PortalCount = 3,
+                SwampCount = 4,
+                SwampSize = 3,
+
+                Players = new PlayerHelper[]
+                {
+                    new PlayerHelper(new PlayerParameters(null)),
+                    new PlayerHelper(new PlayerParameters(null)),
+                    new PlayerHelper(new PlayerParameters(null)),
+                    new PlayerHelper(new PlayerParameters(null)),
+                }
+            });
+            game.InitializeField();
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            graphics.PreferredBackBufferWidth = 500;
-            graphics.PreferredBackBufferHeight = 500;
+            graphics.PreferredBackBufferWidth = a * game.gameParameters.FieldWidth;
+            graphics.PreferredBackBufferHeight = a * game.gameParameters.FieldHeight;
             IsMouseVisible = true;
         }
 
@@ -37,6 +57,8 @@ namespace TreasurePC
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+            if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+                game.InitializeField();
             base.Update(gameTime);
         }
 
@@ -44,7 +66,92 @@ namespace TreasurePC
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin();
-            spriteBatch.Draw(atlasTexture, new Rectangle(0, 0, 250, 100), Color.White);
+            for (int x = 0;x < game.gameParameters.FieldWidth; x++)
+            {
+                for (int y = 0;y < game.gameParameters.FieldHeight; y++)
+                {
+                    Tile t = game.field[x, y];
+                    Rectangle r = new Rectangle();
+                    switch (t.terrainType)
+                    {
+                        case TerrainType.Field:
+                            r = new Rectangle(0, 0, 64, 64);
+                            break;
+                        case TerrainType.Water:
+                            r = new Rectangle(64, 0, 64, 64);
+                            break;
+                        case TerrainType.Swamp:
+                            r = new Rectangle(256, 0, 64, 64);
+                            break;
+                        case TerrainType.Hole:
+                            r = new Rectangle(128, 0, 64, 64);
+                            break;
+                        case TerrainType.Home:
+                            r = new Rectangle(192, 0, 64, 64);
+                            break;
+                        default:
+                            throw new Exception();
+                    }
+                    spriteBatch.Draw(atlasTexture, new Rectangle(x * a, y * a, a, a), r, Color.White);
+                    foreach (var pair in t.walls)
+                        if (pair.Value != BorderType.Empty)
+                        {
+                            switch (pair.Value)
+                            {
+                                case BorderType.BreakableWall:
+                                    r = new Rectangle(256, 64, 64, 64);
+                                    break;
+                                case BorderType.UnbreakableWall:
+                                    r = new Rectangle(0, 64, 64, 64);
+                                    break;
+                                case BorderType.Grate:
+                                    r = new Rectangle(64, 64, 64, 64);
+                                    break;
+                                default:
+                                    throw new Exception();
+                            }
+                            float f = 0;
+                            switch (pair.Key)
+                            {
+                                case Direction.Up:
+                                    f = 0;
+                                    break;
+                                case Direction.Right:
+                                    f = MathHelper.PiOver2;
+                                    break;
+                                case Direction.Down:
+                                    f = MathHelper.PiOver2 * 2;
+                                    break;
+                                case Direction.Left:
+                                    f = MathHelper.PiOver2 * 3;
+                                    break;
+                                default:
+                                    throw new Exception();
+                            }
+                            spriteBatch.Draw(
+                                texture: atlasTexture, 
+                                destinationRectangle: new Rectangle(x * a + 32, y * a + 32, a, a), 
+                                sourceRectangle: r, 
+                                color: Color.White,
+                                rotation: f,
+                                origin: new Vector2(32,32),
+                                effects: SpriteEffects.None,
+                                layerDepth: 0);
+                        }
+                    foreach (var s in t.stuff)
+                    {
+                        switch (s.type)
+                        {
+                            case StuffType.Treasure:
+                                r = new Rectangle(128, 64, 64, 64);
+                                break;
+                            default:
+                                throw new Exception();
+                        }
+                        spriteBatch.Draw(atlasTexture, new Rectangle(x * a, y * a, a, a), r, Color.White);
+                    }
+                }
+            }
             spriteBatch.End();
             base.Draw(gameTime);
         }

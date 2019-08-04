@@ -12,7 +12,7 @@ namespace TreasureAndroid
 
         private PlayerAction action;
 
-        public PlayerAction GetAction(CancellationToken cancellationToken, List<TurnInfo>[] turns)
+        public PlayerAction GetAction(CancellationToken cancellationToken, List<TurnInfo>[] turns, GameField field)
         {
             while (!actionPostedEvent.WaitOne(100))
                 cancellationToken.ThrowIfCancellationRequested();

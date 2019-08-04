@@ -10,6 +10,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Treasure;
+using TreasureAndroid.UserInterface;
 
 namespace TreasureAndroid
 {
@@ -83,7 +84,7 @@ namespace TreasureAndroid
             PlayerHelper[] players = new PlayerHelper[SeekBarValue[playerBar]];
 
             for (int i = 0; i < players.Length; i++)
-                players[i] = new PlayerHelper() { parameters = new PlayerParameters($"Player {i + 1}", i, new SignalingPlayerContoller()) };
+                players[i] = new PlayerHelper(new BasicPlayerParameters(new SignalingPlayerContoller(), $"Player {i + 1}", i));
 
             gameParameters.Players = players;
             Game game = new Game(gameParameters);
@@ -97,32 +98,5 @@ namespace TreasureAndroid
                 Toast.MakeText(this, "Ohh... Your parametres is so hard! Choose something else.", ToastLength.Short).Show();
             }           
         }
-
-        /*private void Generate()
-        {
-            var gameParameters = new GameParameters()
-            {
-                FieldHeight = SeekBarValue[heightBar],
-                FieldWidth = SeekBarValue[widthBar],
-                PortalCount = SeekBarValue[portalBar],
-            };
-
-            PlayerHelper[] players = new PlayerHelper[b.GetInt("players")];
-            //debug
-            for (int i = 0; i < players.Length; i++)
-                players[i] = new PlayerHelper() { parameters = new PlayerParameters($"Player {i + 1}", i, new SignalingPlayerContoller(this)) };
-            //debug end
-            gameParameters.Players = players;
-            Game game = new Game(gameParameters);
-            //var t = Task.Run(() => game.InitializeField()).ContinueWith(_ => RunOnUiThread(PostGeneration));
-            if (game.InitializeField())
-            {
-
-            }
-            else
-            {
-
-            }
-        }*/
     }
 }

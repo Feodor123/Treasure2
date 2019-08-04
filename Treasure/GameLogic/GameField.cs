@@ -6,61 +6,59 @@ namespace Treasure
 {
     public class GameField
     {
-        private const int AttemptCount = 100;
-        private const int RiverFlow = 2;
-        private const double WallGenerationChance = 0.1;
-        public static Dictionary<Direction, Point> directions = new Dictionary<Direction, Point>
+        private static Dictionary<Direction, Point> directions = new Dictionary<Direction, Point>
         {
             {Direction.Up,new Point(0,-1)},
             {Direction.Right,new Point(1,0)},
             {Direction.Down,new Point(0,1)},
             {Direction.Left,new Point(-1,0)},
         };
-        public static Dictionary<Direction, Direction> antiDirections = new Dictionary<Direction, Direction>()
+        private static Dictionary<Direction, Direction> antiDirections = new Dictionary<Direction, Direction>()
         {
             {Direction.Up,Direction.Down},
             {Direction.Down,Direction.Up},
             {Direction.Right,Direction.Left},
             {Direction.Left,Direction.Right},
         };
+
+        private const int AttemptCount = 100;
+        private const int RiverFlow = 2;
+        private const double WallGenerationChance = 0.1;
+
         private Point treasurePos;
         private Nullable<Point> lastRiverTilePos;
-        private int portalCount;
-        private int swampSize;
-        private int swampCount;
-        private int bridgeCount;
-        private int width;
-        private int height;
+        private GameParameters gameParams;
         private Tile[,] tiles;
         private Tile[] river;
         private Tile[] holes;
-        private bool through;
         private Random rnd;
         private Player currentPlayer;
+
         public Player[] players;
-        public GameField(int width, int height, int portalCount, int swampCount, int swampSize, int bridgeCount, bool through, Player[] players,Random rnd)
+
+
+        public GameField(GameParameters gameParams, Player[] players,Random rnd)
         {
-            this.swampCount = swampCount;
-            this.swampSize = swampSize;
-            this.portalCount = portalCount;
-            this.bridgeCount = bridgeCount;
-            this.width = width;
-            this.height = height;
+            this.gameParams = gameParams;
             this.players = players;
-            this.through = through;
             this.rnd = rnd;
         }
 
-        private Tile this[int x, int y]
+        public Tile this[int x, int y]
         {
             get => tiles[x, y];
             set => tiles[x, y] = value;
         }
 
-        private Tile this[Point p]
+        public Tile this[Point p]
         {
             get => tiles[p.X, p.Y];
             set => tiles[p.X, p.Y] = value;
+        }
+
+        public Tuple<Tile[,], Player[]> GetInfo()
+        {
+            return new Tuple<Tile[,], Player[]>(tiles,players);
         }
 
         #region Field Generation
@@ -72,11 +70,11 @@ namespace Treasure
             do
             {
                 count++;
-                tiles = new Tile[width, height];
+                tiles = new Tile[gameParams.FieldWidth, gameParams.FieldHeight];
                 acceptable = GenerateField() &&
                 GenerateRiver(rnd) && 
-                GenerateSwamps(rnd, swampSize, swampCount) &&
-                GenerateHoles(rnd, portalCount) &&
+                GenerateSwamps(rnd, gameParams.SwampSize, gameParams.SwampCount) &&
+                GenerateHoles(rnd, gameParams.PortalCount) &&
                 GenerateHomes(rnd, players) &&
                 GenerateWalls(rnd, WallGenerationChance) &&
                 GenerateTreasure(rnd) &&
@@ -90,9 +88,9 @@ namespace Treasure
 
         private bool GenerateField()
         {
-            for (int x = 0; x < width; x++)
+            for (int x = 0; x < gameParams.FieldWidth; x++)
             {
-                for (int y = 0; y < height; y++)
+                for (int y = 0; y < gameParams.FieldHeight; y++)
                 {
                     tiles[x, y] = new Tile(this, new Point(x, y), TerrainType.Field);
                 }
@@ -103,29 +101,29 @@ namespace Treasure
         private bool GenerateRiver(Random rnd)
         {
             List<Tile> riverTiles = new List<Tile>();
-            if (through)
+            if (gameParams.Through)
             {
                 lastRiverTilePos = null;
                 for (int i = 0; i < AttemptCount; i++)
                 {                    
-                    Point p = new Point(rnd.Next(width), height - 1);
+                    Point p = new Point(rnd.Next(gameParams.FieldWidth), gameParams.FieldHeight - 1);
                     List<Point> river = new List<Point>();
-                    bool[,] water = new bool[width, height];
+                    bool[,] water = new bool[gameParams.FieldWidth, gameParams.FieldHeight];
                     while (p.Y >= 0)
                     {
                         river.Add(p);
                         water[p.X, p.Y] = true;
                         List<Direction> dir = new List<Direction>() { Direction.Up };
-                        if (river.Count == 1 || (river[river.Count - 1] + directions[Direction.Left]).Mod(width,height) != river[river.Count - 2])
+                        if (river.Count == 1 || (river[river.Count - 1] + directions[Direction.Left]).Mod(gameParams.FieldWidth,gameParams.FieldHeight) != river[river.Count - 2])
                         {
                             dir.Add(Direction.Left);
                         }
-                        if (river.Count == 1 || (river[river.Count - 1] + directions[Direction.Right]).Mod(width, height) != river[river.Count - 2])
+                        if (river.Count == 1 || (river[river.Count - 1] + directions[Direction.Right]).Mod(gameParams.FieldWidth, gameParams.FieldHeight) != river[river.Count - 2])
                         {
                             dir.Add(Direction.Right);
                         }
                         p += directions[dir[rnd.Next(dir.Count)]];
-                        p.X = ((p.X % width) + width) % width;
+                        p.X = ((p.X % gameParams.FieldWidth) + gameParams.FieldWidth) % gameParams.FieldWidth;
                     }
                     if (river.First().X != river.Last().X)
                     {
@@ -136,7 +134,7 @@ namespace Treasure
                         int count = 0;
                         foreach (var d in directions.Values)
                         {
-                            Point rr = (r + d).Mod(width,height);
+                            Point rr = (r + d).Mod(gameParams.FieldWidth,gameParams.FieldHeight);
                             if (water[rr.X, rr.Y]) count++;
                         }
                         if (count != 2)
@@ -157,7 +155,7 @@ namespace Treasure
             }
             else
             {
-                Point p = new Point(rnd.Next(width), height - 1);
+                Point p = new Point(rnd.Next(gameParams.FieldWidth), gameParams.FieldHeight - 1);
                 lastRiverTilePos = p;
                 Tile lastTile = null;
                 while (p.Y >= 0)
@@ -166,11 +164,11 @@ namespace Treasure
                     lastTile = this[p];
                     riverTiles.Add(lastTile);
                     List<Direction> dir = new List<Direction>() { Direction.Up };
-                    if (p.X != 0 && this[p.X - 1, p.Y].terrainType == TerrainType.Field && (p.Y == height - 1 || this[p.X - 1, p.Y + 1].terrainType != TerrainType.Water))
+                    if (p.X != 0 && this[p.X - 1, p.Y].terrainType == TerrainType.Field && (p.Y == gameParams.FieldHeight - 1 || this[p.X - 1, p.Y + 1].terrainType != TerrainType.Water))
                     {
                         dir.Add(Direction.Left);
                     }
-                    if (p.X != width - 1 && this[p.X + 1, p.Y].terrainType == TerrainType.Field && (p.Y == height - 1 || this[p.X + 1, p.Y + 1].terrainType != TerrainType.Water))
+                    if (p.X != gameParams.FieldWidth - 1 && this[p.X + 1, p.Y].terrainType == TerrainType.Field && (p.Y == gameParams.FieldHeight - 1 || this[p.X + 1, p.Y + 1].terrainType != TerrainType.Water))
                     {
                         dir.Add(Direction.Right);
                     }
@@ -194,8 +192,8 @@ namespace Treasure
                 foreach (var d in directions.Values)
                 {
                     Point pp = p + d;
-                    if (through)
-                        pp = pp.Mod(width, height);
+                    if (gameParams.Through)
+                        pp = pp.Mod(gameParams.FieldWidth, gameParams.FieldHeight);
                     if (HavePoint(pp) && this[pp].terrainType == TerrainType.Swamp)
                         return true;
                 }
@@ -208,7 +206,7 @@ namespace Treasure
                 Point p;
                 do
                 {
-                    p = new Point(rnd.Next(width), rnd.Next(height));
+                    p = new Point(rnd.Next(gameParams.FieldWidth), rnd.Next(gameParams.FieldHeight));
                     i++;
                 }
                 while ((this[p].terrainType != TerrainType.Field || HaveSwampsAround(p)) && i < AttemptCount);
@@ -226,8 +224,8 @@ namespace Treasure
                 {
                     Point neigh = p + d;
 
-                    if (through)
-                        neigh = neigh.Mod(width, height);
+                    if (gameParams.Through)
+                        neigh = neigh.Mod(gameParams.FieldWidth, gameParams.FieldHeight);
 
                     if (!HavePoint(neigh))
                         continue;
@@ -242,8 +240,8 @@ namespace Treasure
                     foreach (var dd in directions.Values)
                     {
                         Point neighOfNeigh = neigh + dd;
-                        if (through)
-                            neighOfNeigh = neighOfNeigh.Mod(width, height);
+                        if (gameParams.Through)
+                            neighOfNeigh = neighOfNeigh.Mod(gameParams.FieldWidth, gameParams.FieldHeight);
                         if (HavePoint(neighOfNeigh) && this[neighOfNeigh].terrainType == TerrainType.Swamp)
                             isGood = false;
                     }
@@ -311,7 +309,7 @@ namespace Treasure
                 int j = 0;
                 do
                 {
-                    p = new Point(rnd.Next(width), rnd.Next(height));
+                    p = new Point(rnd.Next(gameParams.FieldWidth), rnd.Next(gameParams.FieldHeight));
                     j++;
                 }
                 while (this[p].terrainType != TerrainType.Field && j < AttemptCount);
@@ -336,7 +334,7 @@ namespace Treasure
                     int k = 0;
                     do
                     {
-                        p = new Point(rnd.Next(width), rnd.Next(height));
+                        p = new Point(rnd.Next(gameParams.FieldWidth), rnd.Next(gameParams.FieldHeight));
                         k++;
                     }
                     while (this[p].terrainType != TerrainType.Field && k < AttemptCount);
@@ -347,7 +345,7 @@ namespace Treasure
                     }
                     foreach (var h in homes)
                     {
-                        if (Math.Min(Math.Abs(h.X - p.X),width - Math.Abs(h.X - p.X)) + Math.Min(Math.Abs(h.Y - p.Y), height - Math.Abs(h.Y - p.Y)) <= 2)
+                        if (Math.Min(Math.Abs(h.X - p.X),gameParams.FieldWidth - Math.Abs(h.X - p.X)) + Math.Min(Math.Abs(h.Y - p.Y), gameParams.FieldHeight - Math.Abs(h.Y - p.Y)) <= 2)
                         {
                             b = false;
                             goto exit;
@@ -368,14 +366,14 @@ namespace Treasure
 
         private bool GenerateWalls(Random rnd, double chance)
         {
-            for (int x = 0;x < width; x++)
+            for (int x = 0;x < gameParams.FieldWidth; x++)
             {
-                for (int y = 0;y < height; y++)
+                for (int y = 0;y < gameParams.FieldHeight; y++)
                 {
                     foreach (var d in new Direction[] { Direction.Up, Direction.Left })
                     {
                         Point p1 = new Point(x, y);
-                        Point p2 = (p1 + directions[d]).Mod(width, height);
+                        Point p2 = (p1 + directions[d]).Mod(gameParams.FieldWidth, gameParams.FieldHeight);
                         BorderType type = BorderType.Empty;
                         if (rnd.NextDouble() < chance && !(this[p1].terrainType == TerrainType.Swamp && this[p2].terrainType == TerrainType.Swamp) && !(this[p1].terrainType == TerrainType.Water && this[p2].terrainType == TerrainType.Water))
                         {
@@ -386,17 +384,17 @@ namespace Treasure
                     }
                 }
             }
-            if (!through)
+            if (!gameParams.Through)
             {
-                for (int x = 0; x < width; x++)
+                for (int x = 0; x < gameParams.FieldWidth; x++)
                 {
                     this[x, 0].walls[Direction.Up] = BorderType.UnbreakableWall;
-                    this[x, height - 1].walls[Direction.Down] = BorderType.UnbreakableWall;
+                    this[x, gameParams.FieldHeight - 1].walls[Direction.Down] = BorderType.UnbreakableWall;
                 }
-                for (int y = 0; y < height; y++)
+                for (int y = 0; y < gameParams.FieldHeight; y++)
                 {
                     this[0, y].walls[Direction.Left] = BorderType.UnbreakableWall;
-                    this[width - 1, y].walls[Direction.Right] = BorderType.UnbreakableWall;
+                    this[gameParams.FieldWidth - 1, y].walls[Direction.Right] = BorderType.UnbreakableWall;
                 }
                 this[lastRiverTilePos.Value].walls[Direction.Down] = BorderType.Grate;
             }
@@ -409,7 +407,7 @@ namespace Treasure
             Point p;
             do
             {
-                p = new Point(rnd.Next(width), rnd.Next(height));
+                p = new Point(rnd.Next(gameParams.FieldWidth), rnd.Next(gameParams.FieldHeight));
                 i++;
             }
             while (this[p].terrainType != TerrainType.Field  && i < AttemptCount);
@@ -427,7 +425,7 @@ namespace Treasure
             {
                 return start;
             }
-            Point p = (start + directions[direction]).Mod(width,height);
+            Point p = (start + directions[direction]).Mod(gameParams.FieldWidth,gameParams.FieldHeight);
             Tile t = this[p];
             switch (t.terrainType)
             {
@@ -456,7 +454,7 @@ namespace Treasure
 
         private bool CheckRiver()
         {
-            if (through)
+            if (gameParams.Through)
                 return true;
             return IsWay(lastRiverTilePos.Value, players.Select(_ => _.home.position));
         }
@@ -477,7 +475,7 @@ namespace Treasure
         private bool IsWay(Point start, Point finish)
         {
             Queue<Point> check = new Queue<Point>();
-            bool[,] canGo = new bool[width, height];
+            bool[,] canGo = new bool[gameParams.FieldWidth, gameParams.FieldHeight];
             canGo[start.X,start.Y] = true;
             check.Enqueue(start);
             while (check.Count > 0)
@@ -503,7 +501,7 @@ namespace Treasure
         private bool IsWay(Point start, IEnumerable<Point> finish)
         {
             Queue<Point> check = new Queue<Point>();
-            bool[,] canGo = new bool[width, height];
+            bool[,] canGo = new bool[gameParams.FieldWidth, gameParams.FieldHeight];
             canGo[start.X, start.Y] = true;
             check.Enqueue(start);
             while (check.Count > 0)
@@ -529,9 +527,9 @@ namespace Treasure
 
         private Tile GetTileByDir(Point p,Direction direction)
         {
-            if (through)
-                return this[(p + directions[direction]).Mod(width, height)];
-            else if (p.X >= 0 && p.Y >= 0 && p.X < width && p.Y < height)
+            if (gameParams.Through)
+                return this[(p + directions[direction]).Mod(gameParams.FieldWidth, gameParams.FieldHeight)];
+            else if (p.X >= 0 && p.Y >= 0 && p.X < gameParams.FieldWidth && p.Y < gameParams.FieldHeight)
                 return this[p + directions[direction]];
             else
                 return null;
@@ -567,7 +565,7 @@ namespace Treasure
         /// </summary>
         /// <param name="player">player, who performs action</param>
         /// <param name="direction">direction of move</param>
-        /// <returns>Result of action</returns>
+        /// <returns>Successfullity of action</returns>
         private bool Go(Player player, PlayerAction action)
         {
             var tf = player.playerHelper.actionHistory[player.playerHelper.actionHistory.Count - 1];
@@ -582,7 +580,7 @@ namespace Treasure
                 tf.actions.Add(new ActionInfo(action, tilesInfo));
                 return true;
             }
-            Point p = (player.position + directions[direction]).Mod(width,height);
+            Point p = (player.position + directions[direction]).Mod(gameParams.FieldWidth,gameParams.FieldHeight);
             Tile t = this[p];
 
             // move player and check if somebody was there; Kill him if so
@@ -671,7 +669,7 @@ namespace Treasure
                     BreakWall(p, direction);
                     break;
                 }
-                p = (p + directions[direction]).Mod(width, height);
+                p = (p + directions[direction]).Mod(gameParams.FieldWidth, gameParams.FieldHeight);
             }
 
             if (player.position == player.home.position)//again, if we was killed
@@ -693,7 +691,7 @@ namespace Treasure
         {
             if (this[p].walls[direction] == BorderType.UnbreakableWall)
                 return false;
-            Point pp = (p + directions[direction]).Mod(width,height);
+            Point pp = (p + directions[direction]).Mod(gameParams.FieldWidth,gameParams.FieldHeight);
             this[p].walls[direction] = BorderType.Empty;
             this[pp].walls[antiDirections[direction]] = BorderType.Empty;
             return true;
@@ -733,7 +731,7 @@ namespace Treasure
 
         private bool HavePoint(Point p)
         {
-            return p.X >= 0 && p.X < width && p.Y >= 0 && p.Y < height;
+            return p.X >= 0 && p.X < gameParams.FieldWidth && p.Y >= 0 && p.Y < gameParams.FieldHeight;
         }      
 
         private bool Parallel(Direction dir,Orientation or)

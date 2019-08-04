@@ -12,7 +12,7 @@ namespace Treasure
         private readonly Random rnd;
         private readonly int seed;
 
-        private GameField field;
+        public GameField field;
 
         public GameParameters gameParameters;
 
@@ -39,9 +39,9 @@ namespace Treasure
 
         public bool InitializeField()
         {
-            field = new GameField(gameParameters.FieldWidth, gameParameters.FieldHeight,gameParameters.PortalCount,gameParameters.SwampCount,gameParameters.SwampSize,5,true, players, rnd);
+            field = new GameField(gameParameters, players, rnd);
             return field.Generate();
-        }
+        }        
 
         public Player DoGameLoop(CancellationToken cancellationToken)
         {
@@ -58,7 +58,7 @@ namespace Treasure
                     do
                     {
                         cancellationToken.ThrowIfCancellationRequested();
-                        m = controller.GetAction(cancellationToken, allTurns);  
+                        m = controller.GetAction(cancellationToken, allTurns, field);  
                     }
                     while (!field.Update(player, m));
                     OnTurnDone.Invoke(this,new TurnDoneEventArgs());

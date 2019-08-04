@@ -4,7 +4,7 @@ namespace Treasure
 {
     public class Tile
     {
-        public Dictionary<Direction,BorderType> walls = new Dictionary<Direction, BorderType>();
+        public Dictionary<Direction, BorderType> walls = new Dictionary<Direction, BorderType>();
         public TerrainType terrainType;
         public Orientation orientation;
         public Point position;
@@ -35,7 +35,7 @@ namespace Treasure
 
         public void DropStuff(List<Stuff> drop)
         {
-            foreach(var st in drop)
+            foreach (var st in drop)
             {
                 Stuff toAddCount = stuff.Find(_ => _.type == st.type);
                 if (toAddCount == null)

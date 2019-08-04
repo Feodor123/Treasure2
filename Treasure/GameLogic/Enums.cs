@@ -2,7 +2,6 @@
 {
     public enum TerrainType
     {
-        Unknown,
         Field,
         Water,
         Swamp,
@@ -12,10 +11,7 @@
 
     public enum BorderType
     {
-        Unknown,
         Empty,
-        Wall,
-        ShootedWall,
         BreakableWall,
         UnbreakableWall,
         Grate,

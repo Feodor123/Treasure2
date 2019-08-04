@@ -1,6 +1,6 @@
 ﻿namespace Treasure
 {
-    public abstract class PlayerParameters
+    public class PlayerParameters
     {
         public PlayerParameters(IPlayerController controller)
         {

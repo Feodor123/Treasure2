@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="UserInterface\ActivityBridge.cs" />
+    <Compile Include="UserInterface\BasicPlayerParameters.cs" />
     <Compile Include="UserInterface\GameActivity.cs" />
     <Compile Include="UserInterface\GameOverActivity.cs" />
     <Compile Include="UserInterface\GameSettingsActivity.cs" />

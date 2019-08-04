@@ -5,7 +5,7 @@ namespace Treasure
 {
     public interface IPlayerController
     {
-        PlayerAction GetAction(CancellationToken cancellationToken, List<TurnInfo>[] turns);
+        PlayerAction GetAction(CancellationToken cancellationToken, List<TurnInfo>[] turns, GameField field);
         void PerformAction(PlayerAction action);
     }
 }

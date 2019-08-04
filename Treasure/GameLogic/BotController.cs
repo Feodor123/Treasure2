@@ -13,7 +13,7 @@ namespace Treasure
             this.gameParameters = gameParameters;
         }
 
-        public virtual PlayerAction GetAction(CancellationToken cancellationToken, List<TurnInfo>[] allTurns)
+        public virtual PlayerAction GetAction(CancellationToken cancellationToken, List<TurnInfo>[] allTurns,GameField field)
         {
             cancellationToken.ThrowIfCancellationRequested();
             Thread.Sleep(100);
