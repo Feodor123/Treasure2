@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-<!--width-->
+  <LinearLayout
+    android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <!--width-->
     <TextView
         android:id="@+id/width_bar_name"
         android:text="@string/width"
@@ -19,22 +23,22 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/width_bar_name"
         android:layout_marginTop="10dp">
-        <SeekBar
-            android:id="@+id/width_bar"
-            android:max="4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_toStartOf="@+id/width_bar_value" />
-        <TextView
-            android:id="@+id/width_bar_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:text="123"
-            android:textSize="18sp" />
+      <SeekBar
+          android:id="@+id/width_bar"
+          android:max="4"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentStart="true"
+          android:layout_toStartOf="@+id/width_bar_value" />
+      <TextView
+          android:id="@+id/width_bar_value"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentEnd="true"
+          android:text="123"
+          android:textSize="18sp" />
     </RelativeLayout>
-<!--height-->
+    <!--height-->
     <TextView
         android:id="@+id/height_bar_name"
         android:text="@string/height"
@@ -50,22 +54,22 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/height_bar_name"
         android:layout_marginTop="10dp">
-        <SeekBar
-            android:id="@+id/height_bar"
-            android:max="4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_toStartOf="@+id/height_bar_value" />
-        <TextView
-            android:id="@+id/height_bar_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:text="123"
-            android:textSize="18sp" />
+      <SeekBar
+          android:id="@+id/height_bar"
+          android:max="4"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentStart="true"
+          android:layout_toStartOf="@+id/height_bar_value" />
+      <TextView
+          android:id="@+id/height_bar_value"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentEnd="true"
+          android:text="123"
+          android:textSize="18sp" />
     </RelativeLayout>
-<!--portals-->
+    <!--portals-->
     <TextView
         android:id="@+id/portal_bar_name"
         android:text="@string/portal_count"
@@ -81,22 +85,22 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/portal_bar_name"
         android:layout_marginTop="10dp">
-        <SeekBar
-            android:id="@+id/portal_bar"
-            android:max="3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_toStartOf="@+id/portal_bar_value" />
-        <TextView
-            android:id="@+id/portal_bar_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:text="123"
-            android:textSize="18sp" />
+      <SeekBar
+          android:id="@+id/portal_bar"
+          android:max="3"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentStart="true"
+          android:layout_toStartOf="@+id/portal_bar_value" />
+      <TextView
+          android:id="@+id/portal_bar_value"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentEnd="true"
+          android:text="123"
+          android:textSize="18sp" />
     </RelativeLayout>
-<!--players-->
+    <!--players-->
     <TextView
         android:id="@+id/player_bar_name"
         android:text="@string/player_count"
@@ -112,22 +116,22 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/player_bar_name"
         android:layout_marginTop="10dp">
-        <SeekBar
-            android:id="@+id/player_bar"
-            android:max="3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_toStartOf="@+id/player_bar_value" />
-        <TextView
-            android:id="@+id/player_bar_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:text="123"
-            android:textSize="18sp" />
+      <SeekBar
+          android:id="@+id/player_bar"
+          android:max="3"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentStart="true"
+          android:layout_toStartOf="@+id/player_bar_value" />
+      <TextView
+          android:id="@+id/player_bar_value"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentEnd="true"
+          android:text="123"
+          android:textSize="18sp" />
     </RelativeLayout>
-<!--swamps-->
+    <!--swamps-->
     <TextView
         android:id="@+id/swamp_bar_name"
         android:text="@string/swamp_count"
@@ -143,22 +147,22 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/swamp_bar_name"
         android:layout_marginTop="10dp">
-        <SeekBar
-            android:id="@+id/swamp_bar"
-            android:max="3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_toStartOf="@+id/swamp_bar_value" />
-        <TextView
-            android:id="@+id/swamp_bar_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:text="123"
-            android:textSize="18sp" />
+      <SeekBar
+          android:id="@+id/swamp_bar"
+          android:max="3"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentStart="true"
+          android:layout_toStartOf="@+id/swamp_bar_value" />
+      <TextView
+          android:id="@+id/swamp_bar_value"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentEnd="true"
+          android:text="123"
+          android:textSize="18sp" />
     </RelativeLayout>
-<!--swamp size-->
+    <!--swamp size-->
     <TextView
         android:id="@+id/swamp_size_bar_name"
         android:text="@string/swamp_size"
@@ -174,27 +178,27 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/swamp_size_bar_name"
         android:layout_marginTop="10dp">
-        <SeekBar
-            android:id="@+id/swamp_size_bar"
-            android:max="3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_toStartOf="@+id/swamp_size_bar_value" />
-        <TextView
-            android:id="@+id/swamp_size_bar_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:text="123"
-            android:textSize="18sp" />
+      <SeekBar
+          android:id="@+id/swamp_size_bar"
+          android:max="3"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentStart="true"
+          android:layout_toStartOf="@+id/swamp_size_bar_value" />
+      <TextView
+          android:id="@+id/swamp_size_bar_value"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentEnd="true"
+          android:text="123"
+          android:textSize="18sp" />
     </RelativeLayout>
-<!--start button-->
-    <Button
-        android:id="@+id/start_new_game"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="10dp"
-        android:text="@string/new_game" />
-</RelativeLayout>
+  </LinearLayout>
+  <!--start button-->
+  <Button
+      android:id="@+id/start_new_game"
+      android:layout_height="wrap_content"
+      android:layout_width="match_parent"
+      android:layout_gravity="bottom"
+      android:text="@string/new_game" />
+</FrameLayout>

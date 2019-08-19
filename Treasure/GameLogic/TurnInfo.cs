@@ -25,7 +25,7 @@ namespace Treasure
         public PlayerAction action;
         public List<TileInfo> tiles;
 
-        public static ActionInfo DieAction(TileInfo tile) { return new ActionInfo(new PlayerAction(Action.Die, Direction.None), new List<TileInfo>() { tile }); }
+        public static ActionInfo DieAction(TileInfo tile) { return new ActionInfo(new PlayerAction(ActionType.Die, Direction.None), new List<TileInfo>() { tile }); }
 
         public ActionInfo(PlayerAction action, List<TileInfo> tiles)
         {

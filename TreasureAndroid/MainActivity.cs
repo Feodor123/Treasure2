@@ -10,27 +10,46 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 
-namespace TreasureAndroid
+using Microsoft.Xna.Framework;
+
+using System.Threading;
+
+namespace TreasureAndroid.UserInterface
 {
     [Activity(MainLauncher = true)]
-    public class MainActivity : Activity
+    public class MainActivity : AndroidGameActivity
     {
         private Button playButton;
 
+        private View background;
+
         protected override void OnCreate(Bundle savedInstanceState)
-        {
+        {      
             RequestWindowFeature(WindowFeatures.NoTitle);
             base.OnCreate(savedInstanceState);
+
+            var g = new BackAnimator();
 
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_main);
 
+
             playButton = FindViewById<Button>(Resource.Id.start_game);
+            var root = FindViewById<FrameLayout>(Resource.Id.root);         
+
+            background = (View)g.Services.GetService(typeof(View));
+
+            background.SetZ(-20);
+
+            root.AddView(background);
 
             playButton.Click += PlayButton_Click;
+
+            Thread thread = new Thread(() => g.Run());
+            thread.Start();
         }
 
-        private void PlayButton_Click(object sender, System.EventArgs e)
+        private void PlayButton_Click(object sender, EventArgs e)
         {
             StartActivity(typeof(GameSettingsActivity));
             //new Android.Content.Intent(this, typeof(GameActivity));

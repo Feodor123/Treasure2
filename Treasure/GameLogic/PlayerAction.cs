@@ -8,23 +8,23 @@ namespace Treasure
     public class PlayerAction
     {
         private static Random _rnd = new Random();
-        public PlayerAction(Action action, Direction direction, int intParam = -1)
+        public PlayerAction(ActionType action, Direction direction, int intParam = -1)
         {
-            this.action = action;
+            this.type = action;
             this.direction = direction;
             this.intParam = intParam;
         }
-        public Action action;
+        public ActionType type;
         public Direction direction;
         public int intParam;
 
         public override string ToString()
         {
-            return $"{(action == Action.Go ? "Go" : "Shoot")} {direction}";
+            return $"{(type == ActionType.Go ? "Go" : "Shoot")} {direction}";
         }
         public static PlayerAction RandomGo()
         {
-            return new PlayerAction(Action.Go, (Direction)_rnd.Next(4));
+            return new PlayerAction(ActionType.Go, (Direction)_rnd.Next(4));
         }
     }
 }

@@ -12,6 +12,7 @@ namespace Treasure
         private readonly Random rnd;
         private readonly int seed;
 
+        public int currentPlayer = 0;
         public GameField field;
 
         public GameParameters gameParameters;
@@ -48,9 +49,9 @@ namespace Treasure
             Player winner = null;
             while (winner == null)
             {
-                foreach (var player in players)
+                for (int i = 0;i < players.Length;i++)
                 {
-
+                    var player = players[i];
                     cancellationToken.ThrowIfCancellationRequested();                    
                     var controller = player.playerHelper.parameters.Controller;
                     List<TurnInfo>[] allTurns = players.Select(_ => _.playerHelper.actionHistory).ToArray();
@@ -68,6 +69,17 @@ namespace Treasure
                 }
             }
             return winner;
+        }
+
+        public Player Step()//simpler way without threads; unsafe, only for only bots
+        {
+            var silence = new CancellationToken();
+            var player = players[currentPlayer];
+            currentPlayer = (currentPlayer + 1) % players.Length;
+            var controller = player.playerHelper.parameters.Controller;
+            List<TurnInfo>[] allTurns = players.Select(_ => _.playerHelper.actionHistory).ToArray();
+            field.Update(player, controller.GetAction(silence, allTurns, field));
+            return field.CheckWin();
         }
     }
 }

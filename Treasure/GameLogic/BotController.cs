@@ -16,7 +16,6 @@ namespace Treasure
         public virtual PlayerAction GetAction(CancellationToken cancellationToken, List<TurnInfo>[] allTurns,GameField field)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            Thread.Sleep(100);
             return PlayerAction.RandomGo();
         }
         public void PerformAction(PlayerAction action) { }//usual bot don't react on user's clicks

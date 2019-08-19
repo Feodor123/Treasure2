@@ -39,7 +39,7 @@ namespace TreasureAndroid
             winnerView.Text = _winnerName + " won!!!";
             FindViewById<Button>(Resource.Id.start_new_game).Click += NewGame;
         }
-        private void NewGame(object sender, System.EventArgs e)
+        private void NewGame(object sender, EventArgs e)
         {
             StartActivity(typeof(GameSettingsActivity));
         }

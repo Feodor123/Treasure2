@@ -26,7 +26,7 @@
         None,
     }
 
-    public enum Action
+    public enum ActionType
     {
         None,
         Die,

@@ -543,12 +543,12 @@ namespace Treasure
         {
             currentPlayer = player;
             bool b;
-            switch (motion.action)
+            switch (motion.type)
             {
-                case Action.Go:
+                case ActionType.Go:
                     b = Go(player, motion);
                     break;
-                case Action.Shoot:
+                case ActionType.Shoot:
                     b = Shoot(player, motion);
                     break;
                 default:

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,11 +13,14 @@ using Android.Widget;
 using Treasure;
 using TreasureAndroid.UserInterface;
 
+using Microsoft.Xna.Framework;
+
 namespace TreasureAndroid
 {
     [Activity(Label = "GameSettingsActivity")]
-    public class GameSettingsActivity : Activity, SeekBar.IOnSeekBarChangeListener
+    public class GameSettingsActivity : AndroidGameActivity, SeekBar.IOnSeekBarChangeListener
     {
+        private View background;
         SeekBar widthBar;
         SeekBar heightBar;
         SeekBar playerBar;
@@ -30,7 +34,7 @@ namespace TreasureAndroid
         {
             RequestWindowFeature(WindowFeatures.NoTitle);
             base.OnCreate(savedInstanceState);
-            SetContentView(Resource.Layout.activity_game_settings);
+            SetContentView(Resource.Layout.activity_game_settings);            
 
             widthBar = AddSeekBar(Resource.Id.width_bar, Resource.Id.width_bar_value, 6, 12);
             heightBar = AddSeekBar(Resource.Id.height_bar, Resource.Id.height_bar_value, 6, 12);
@@ -39,6 +43,15 @@ namespace TreasureAndroid
             swampBar = AddSeekBar(Resource.Id.swamp_bar, Resource.Id.swamp_bar_value, 0, 6);
             swampSizeBar = AddSeekBar(Resource.Id.swamp_size_bar, Resource.Id.swamp_size_bar_value, 1, 8);
             FindViewById<Button>(Resource.Id.start_new_game).Click += TryStartGame;
+            var root = FindViewById<FrameLayout>(Resource.Id.root);
+
+            var g = new BackAnimator();            
+            background = (View)g.Services.GetService(typeof(View));
+            background.SetZ(-20);
+            root.AddView(background);
+
+            Thread thread = new Thread(() => g.Run());
+            thread.Start();
         }
 
         private SeekBar AddSeekBar(int SeekId,int textId,int minValue, int maxValue)
@@ -87,7 +100,7 @@ namespace TreasureAndroid
                 players[i] = new PlayerHelper(new BasicPlayerParameters(new SignalingPlayerContoller(), $"Player {i + 1}", i));
 
             gameParameters.Players = players;
-            Game game = new Game(gameParameters);
+            Treasure.Game game = new Treasure.Game(gameParameters);
             if (game.InitializeField())
             {
                 ActivityBridge.game = game;
