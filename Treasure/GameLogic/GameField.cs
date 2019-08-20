@@ -78,9 +78,7 @@ namespace Treasure
                 GenerateHomes(rnd, players) &&
                 GenerateWalls(rnd, WallGenerationChance) &&
                 GenerateTreasure(rnd) &&
-                CheckHoles() &&
-                CheckRiver() &&
-                CheckTreasure();
+                CondensationCheck();
             }
             while (!acceptable && count <= AttemptCount);
             return acceptable;
@@ -236,22 +234,14 @@ namespace Treasure
                     if (swamp.Contains(neigh) || candidates.Contains(neigh))
                         continue;
 
-                    bool isGood = true;
-                    foreach (var dd in directions.Values)
-                    {
-                        Point neighOfNeigh = neigh + dd;
-                        if (gameParams.Through)
-                            neighOfNeigh = neighOfNeigh.Mod(gameParams.FieldWidth, gameParams.FieldHeight);
-                        if (HavePoint(neighOfNeigh) && this[neighOfNeigh].terrainType == TerrainType.Swamp)
-                            isGood = false;
-                    }
-                    if (isGood)
+                    if (!HaveSwampsAround(neigh))
                         candidates.Add(neigh);
                 }
             }
 
             for (int j = 0;j < AttemptCount;j++)
             {
+                swamp.Clear();
                 Point p = FindPointWithoutSwampsAround();
                 if (p == new Point(-1, -1))
                     continue;
@@ -277,6 +267,12 @@ namespace Treasure
                     FindCandidates(p);
                 }
                 
+                if (swamp.Count != 3)
+                {
+
+                }
+
+
                 // Apply results
                 foreach (var s in swamp)
                     this[s] = new Tile(this, s, TerrainType.Swamp);
@@ -419,6 +415,55 @@ namespace Treasure
             return true;
         }        
 
+        private bool CondensationCheck()
+        {
+            Dictionary<Point, Node> dict = new Dictionary<Point, Node>();
+            dict.Add(treasurePos,new Node(treasurePos,this));
+            dict[treasurePos].Go(dict);
+            int i = dict[treasurePos].Go2();
+            if (i < dict.Count)
+                return false;
+            if (players.Count(_ => !dict.ContainsKey(_.home.position)) > 0)
+                return false;
+            return true;
+        }
+
+        class Node
+        {
+            public GameField field;
+            public Point point;
+            public List<Node> from = new List<Node>();
+            public bool b;
+            public Node(Point point,GameField field)
+            {
+                this.point = point;
+                this.field = field;
+            }
+            public void Go(Dictionary<Point, Node> dict)
+            {
+                foreach (var d in directions.Keys)
+                {
+                    Point p2 = field.CheckGo(point, d);
+                    if (!dict.ContainsKey(p2))
+                    {
+                        var n = new Node(p2, field);
+                        dict.Add(p2, n);
+                        n.Go(dict);
+                    }
+                    dict[p2].from.Add(this);
+                }
+            }
+            public int Go2()
+            {
+                b = true;
+                int i = 1;
+                foreach (var n in from)
+                    if (!n.b)
+                        i += n.Go2();
+                return i;
+            }
+        }
+
         private Point CheckGo(Point start, Direction direction)
         {
             if (this[start].walls[direction] != BorderType.Empty)
@@ -450,26 +495,6 @@ namespace Treasure
                 default:
                     throw new Exception();
             }
-        }
-
-        private bool CheckRiver()
-        {
-            if (gameParams.Through)
-                return true;
-            return IsWay(lastRiverTilePos.Value, players.Select(_ => _.home.position));
-        }
-
-        private bool CheckTreasure()
-        {
-            return IsWay(treasurePos, players.Select(_ => _.home.position));
-        }
-
-        private bool CheckHoles()
-        {
-            foreach (var h in holes)
-                if (!IsWay(h.position, players.Select(_ => _.home.position)))
-                    return false;
-            return true;
         }
 
         private bool IsWay(Point start, Point finish)

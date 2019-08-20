@@ -17,7 +17,7 @@ using Android.Widget;
 
 namespace TreasureAndroid
 {
-    [Activity(Label = "GameOverActivity")]
+    [Activity(Label = "GameOverActivity", ScreenOrientation = Android.Content.PM.ScreenOrientation.Portrait)]
     public class GameOverActivity : Activity
     {
         private string _winnerName = null;

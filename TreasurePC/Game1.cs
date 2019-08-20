@@ -14,13 +14,13 @@ namespace TreasurePC
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         int a = 64;
+        Random rnd = new Random();
         
-
-        public Game1()
+        public void NewTGame()
         {
             game = new Treasure.Game(new GameParameters()
             {
-                FieldWidth = 10,
+                FieldWidth = 5,
                 FieldHeight = 10,
                 PortalCount = 3,
                 SwampCount = 4,
@@ -33,8 +33,36 @@ namespace TreasurePC
                     new PlayerHelper(new PlayerParameters(null)),
                     new PlayerHelper(new PlayerParameters(null)),
                 }
-            });
+            }, rnd.Next());
             game.InitializeField();
+        }
+
+        public void NewTGame(int seed)
+        {
+            game = new Treasure.Game(new GameParameters()
+            {
+                FieldWidth = 5,
+                FieldHeight = 10,
+                PortalCount = 3,
+                SwampCount = 4,
+                SwampSize = 3,
+
+                Players = new PlayerHelper[]
+                {
+                    new PlayerHelper(new PlayerParameters(null)),
+                    new PlayerHelper(new PlayerParameters(null)),
+                    new PlayerHelper(new PlayerParameters(null)),
+                    new PlayerHelper(new PlayerParameters(null)),
+                }
+            }, seed);
+            bool b = false;
+            while (!b)
+                b = game.InitializeField();
+        }
+
+        public Game1()
+        {
+            NewTGame();
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             graphics.PreferredBackBufferWidth = a * game.gameParameters.FieldWidth;
@@ -58,7 +86,9 @@ namespace TreasurePC
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
             if (Keyboard.GetState().IsKeyDown(Keys.Enter))
-                game.InitializeField();
+            {
+                NewTGame();
+            }
             base.Update(gameTime);
         }
 

@@ -17,7 +17,7 @@ using Microsoft.Xna.Framework;
 
 namespace TreasureAndroid
 {
-    [Activity(Label = "GameSettingsActivity")]
+    [Activity(Label = "GameSettingsActivity", ScreenOrientation = Android.Content.PM.ScreenOrientation.Portrait)]
     public class GameSettingsActivity : AndroidGameActivity, SeekBar.IOnSeekBarChangeListener
     {
         private View background;
@@ -43,15 +43,15 @@ namespace TreasureAndroid
             swampBar = AddSeekBar(Resource.Id.swamp_bar, Resource.Id.swamp_bar_value, 0, 6);
             swampSizeBar = AddSeekBar(Resource.Id.swamp_size_bar, Resource.Id.swamp_size_bar_value, 1, 8);
             FindViewById<Button>(Resource.Id.start_new_game).Click += TryStartGame;
+            /*
             var root = FindViewById<FrameLayout>(Resource.Id.root);
-
             var g = new BackAnimator();            
             background = (View)g.Services.GetService(typeof(View));
             background.SetZ(-20);
             root.AddView(background);
-
             Thread thread = new Thread(() => g.Run());
             thread.Start();
+            */
         }
 
         private SeekBar AddSeekBar(int SeekId,int textId,int minValue, int maxValue)

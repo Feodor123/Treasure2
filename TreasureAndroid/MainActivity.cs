@@ -16,7 +16,7 @@ using System.Threading;
 
 namespace TreasureAndroid.UserInterface
 {
-    [Activity(MainLauncher = true)]
+    [Activity(MainLauncher = true, ScreenOrientation = Android.Content.PM.ScreenOrientation.Portrait)]
     public class MainActivity : AndroidGameActivity
     {
         private Button playButton;
@@ -25,7 +25,7 @@ namespace TreasureAndroid.UserInterface
 
         protected override void OnCreate(Bundle savedInstanceState)
         {      
-            RequestWindowFeature(WindowFeatures.NoTitle);
+            RequestWindowFeature(WindowFeatures.NoTitle);            
             base.OnCreate(savedInstanceState);
 
             var g = new BackAnimator();

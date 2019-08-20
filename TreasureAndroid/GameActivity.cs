@@ -20,7 +20,7 @@ using TreasureAndroid.UserInterface;
 
 namespace TreasureAndroid
 {
-    [Activity(ConfigurationChanges = Android.Content.PM.ConfigChanges.Orientation | Android.Content.PM.ConfigChanges.ScreenSize)]
+    [Activity(ScreenOrientation = Android.Content.PM.ScreenOrientation.Portrait)]
     public class GameActivity : Activity
     {
         private static readonly Color[] PlayerColors = new Color[]
