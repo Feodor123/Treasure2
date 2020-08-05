@@ -24,6 +24,8 @@ namespace Treasure
         private const int AttemptCount = 100;
         private const int RiverFlow = 2;
         private const double WallGenerationChance = 0.1;
+        public const int maxBulletCount = 3;
+        public const int startHomeBulletCount = 20;
 
         private Point treasurePos;
         private Nullable<Point> lastRiverTilePos;
@@ -32,15 +34,21 @@ namespace Treasure
         private Tile[] river;
         private Tile[] holes;
         private Random rnd;
-        private Player currentPlayer;
+        public List<TurnInfo>[] ActionHistories { get; private set; }
 
-        public Player[] players;
+        public FieldPlayer[] players;
 
 
-        public GameField(GameParameters gameParams, Player[] players,Random rnd)
+        public GameField(GameParameters gameParams, Random rnd)
         {
+            ActionHistories = new List<TurnInfo>[gameParams.PlayerCount];
+            players = new FieldPlayer[gameParams.PlayerCount];
+            for (int i = 0; i < gameParams.PlayerCount; ++i)
+            {
+                ActionHistories[i] = new List<TurnInfo> { new TurnInfo() };
+                players[i] = new FieldPlayer(maxBulletCount, startHomeBulletCount);
+            }
             this.gameParams = gameParams;
-            this.players = players;
             this.rnd = rnd;
         }
 
@@ -56,9 +64,9 @@ namespace Treasure
             set => tiles[p.X, p.Y] = value;
         }
 
-        public Tuple<Tile[,], Player[]> GetInfo()
+        public Tuple<Tile[,], FieldPlayer[]> GetInfo()
         {
-            return new Tuple<Tile[,], Player[]>(tiles,players);
+            return new Tuple<Tile[,], FieldPlayer[]>(tiles,players);
         }
 
         #region Field Generation
@@ -312,7 +320,7 @@ namespace Treasure
             return true;
         }
 
-        private bool GenerateHomes(Random rnd, Player[] players)
+        private bool GenerateHomes(Random rnd, FieldPlayer[] players)
         {
             List<Point> homes = new List<Point>();
             for (int i = 0; i < players.Length; i++)
@@ -561,23 +569,22 @@ namespace Treasure
 
         #region Player action handling
 
-        public bool Update(Player player, PlayerAction motion)
+        public bool Update(int playerInd, PlayerAction motion)
         {
-            currentPlayer = player;
             bool b;
             switch (motion.type)
             {
                 case ActionType.Go:
-                    b = Go(player, motion);
+                    b = Go(playerInd, motion);
                     break;
                 case ActionType.Shoot:
-                    b = Shoot(player, motion);
+                    b = Shoot(playerInd, motion);
                     break;
                 default:
                     throw new Exception();
             }
             if (b)
-                player.playerHelper.actionHistory.Add(new TurnInfo());
+                ActionHistories[playerInd].Add(new TurnInfo());
             return b;
         }
 
@@ -588,9 +595,10 @@ namespace Treasure
         /// <param name="player">player, who performs action</param>
         /// <param name="direction">direction of move</param>
         /// <returns>Successfullity of action</returns>
-        private bool Go(Player player, PlayerAction action)
+        private bool Go(int playerInd, PlayerAction action)
         {
-            var tf = player.playerHelper.actionHistory[player.playerHelper.actionHistory.Count - 1];
+            var tf = ActionHistories[playerInd].Last();
+            var player = players[playerInd];
             var direction = action.direction;
             List<TileInfo> tilesInfo = new List<TileInfo>();
             if (this[player.position].walls[direction] != BorderType.Empty)
@@ -668,9 +676,10 @@ namespace Treasure
             return true;
         }       
 
-        private bool Shoot(Player player, PlayerAction action)
+        private bool Shoot(int playerInd, PlayerAction action)
         {
-            var tf = player.playerHelper.actionHistory[player.playerHelper.actionHistory.Count - 1];
+            var tf = ActionHistories[playerInd].Last();
+            var player = players[playerInd];
             var direction = action.direction;
             if (player.bulletCount == 0)
                 return false;
@@ -701,12 +710,12 @@ namespace Treasure
             return true;
         }
 
-        public Player CheckWin()
+        public int CheckWin()
         {
-            foreach (var p in players)
-                if (p.position == p.home.position && p.stuff.Any(_ => _.type == StuffType.Treasure))
-                    return p;
-            return null;
+            for (int i = 0;i < gameParams.PlayerCount;++i)
+                if (players[i].position == players[i].home.position && players[i].stuff.Any(_ => _.type == StuffType.Treasure))
+                    return i;
+            return -1;
         }
 
         private bool BreakWall(Point p, Direction direction)
@@ -719,7 +728,7 @@ namespace Treasure
             return true;
         }
 
-        private List<Stuff> TakeStuff(Player player)
+        private List<Stuff> TakeStuff(FieldPlayer player)
         {
             List<Stuff> stuff = this[player.position].stuff.ToList();
             this[player.position].stuff = new List<Stuff>();
@@ -734,21 +743,21 @@ namespace Treasure
             return stuff;
         }
 
-        private void CheckPlayerCollision(Player player)
+        private void CheckPlayerCollision(FieldPlayer player)
         {
             var coll = players.Where(_ => _.position == player.position && _ != player);
             if (coll.Count() > 0)
                 KillPlayer(coll.Single());
         }
 
-        private void KillPlayer(Player player)
+        private void KillPlayer(FieldPlayer player)
         {
             player.UpdateBullets();
             this[player.position].DropStuff(player.stuff);
             player.stuff.Clear();
             player.position = player.home.position;
             CheckPlayerCollision(player);
-            player.playerHelper.actionHistory.Last().actions.Add(ActionInfo.DieAction(new TileInfo(MoveResult.Home, TakeStuff(player))));
+            ActionHistories[Enumerable.Range(0, gameParams.PlayerCount).First(_ => players[_] == player)].Last().actions.Add(ActionInfo.DieAction(new TileInfo(MoveResult.Home, TakeStuff(player))));
         }
 
         private bool HavePoint(Point p)

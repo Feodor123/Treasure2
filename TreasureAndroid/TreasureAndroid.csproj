@@ -60,7 +60,7 @@
   <ItemGroup>
     <Compile Include="ActivityBridge.cs" />
     <Compile Include="BackAnimator.cs" />
-    <Compile Include="BasicPlayerParameters.cs" />
+    <Compile Include="PlayerParameters.cs" />
     <Compile Include="CustomListView.cs" />
     <Compile Include="GameActivity.cs" />
     <Compile Include="GameOverActivity.cs" />

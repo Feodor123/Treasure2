@@ -39,7 +39,9 @@ namespace TreasureAndroid
         Game game;
 
         int currentPlayer;
-        PlayerHelper[] players;
+        List<TurnInfo>[] actionHistories;
+        PlayerParameters[] parameters;
+        IPlayerController[] controllers;
 
         CancellationTokenSource cancellationTokenSource;
         Thread gameThread;        
@@ -56,14 +58,16 @@ namespace TreasureAndroid
 
             game = ActivityBridge.game;
             game.OnTurnDone += (sender,args) => RunOnUiThread(() => UseResult(sender,args));
-            players = game.gameParameters.Players;
-            
+            actionHistories = game.ActionHistories;
+            parameters = ActivityBridge.playersParameters;
+            controllers = game.playerControllers;
+
             cancellationTokenSource = new CancellationTokenSource();
             gameThread = new Thread(() =>
             {
                 try
                 {
-                    Player winner = game.DoGameLoop(cancellationTokenSource.Token);
+                    int winner = game.DoGameLoop(cancellationTokenSource.Token);
                     RunOnUiThread(() => PlayerWon(winner));
                 }
                 catch (System.OperationCanceledException)
@@ -113,14 +117,14 @@ namespace TreasureAndroid
         private string GenerateText()
         {
             List<string> text = new List<string>();
-            for (int i = 0;i < players[0].actionHistory.Count;i++)
+            for (int i = 0;i < actionHistories[0].Count;i++)
             {
                 text.Add($"Turn {i+1}:");
-                for (int j = 0;j < players.Length; j++)
+                for (int j = 0;j < actionHistories.Length; j++)
                 {
-                    var tf = players[j].actionHistory[i];
+                    var tf = actionHistories[j][i];
                     StringBuilder sb = new StringBuilder();
-                    sb.Append($"{(players[j].parameters as BasicPlayerParameters).name}: ");
+                    sb.Append($"{parameters[j].name}: ");
                     List<string> strs = new List<string>();
                     int k;
                     for (k = 0; k < tf.actions.Count && tf.actions[k].action.type == ActionType.Die; k++) ;
@@ -155,7 +159,7 @@ namespace TreasureAndroid
                                 }
                                 else
                                 {
-                                    strs.Add($"{(players[t.intParam - 1].parameters as BasicPlayerParameters).name}\'s Home");
+                                    strs.Add($"{parameters[t.intParam - 1].name}\'s Home");
                                 }
                             }
                             else
@@ -176,7 +180,7 @@ namespace TreasureAndroid
                         strs.Add("Died");
                     sb.Append(string.Join(" - ", strs));
                     text.Add(sb.ToString());
-                    if ((j == currentPlayer) && (i == players[j].actionHistory.Count - 1))
+                    if ((j == currentPlayer) && (i == actionHistories[j].Count - 1))
                         goto BREAK1;
                 }
             }
@@ -187,25 +191,25 @@ namespace TreasureAndroid
         private void PrepareResultRead(int player)
         {
             currentPlayer = player;
-            root.Background = new ColorDrawable(PlayerColors[(players[currentPlayer].parameters as BasicPlayerParameters).colorNumber]);
+            root.Background = new ColorDrawable(PlayerColors[parameters[currentPlayer].colorNumber]);
             historyView.Text = GenerateText();
         }
 
         public void UseResult(object sender, EventArgs e)
         {
-            PrepareResultRead((currentPlayer + 1) % players.Length);
+            PrepareResultRead((currentPlayer + 1) % game.gameParameters.PlayerCount);
         }
 
         private void PerformPlayerAction(PlayerAction action)
         {
-            players[currentPlayer].parameters.Controller.PerformAction(action);
+            controllers[currentPlayer].PerformAction(action);
         }
 
-        private void PlayerWon(Player player)
+        private void PlayerWon(int playerInd)
         {
             var intent = new Intent(this, typeof(GameOverActivity));
             Bundle b = new Bundle();
-            b.PutString("player", (player.playerHelper.parameters as BasicPlayerParameters).name);
+            b.PutString("player", parameters[playerInd].name);
             intent.PutExtras(b);
 
             Finish();

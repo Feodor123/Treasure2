@@ -13,11 +13,11 @@ using Treasure;
 
 namespace TreasureAndroid.UserInterface
 {
-    class BasicPlayerParameters : PlayerParameters
+    class PlayerParameters
     {
         public string name;
         public int colorNumber;
-        public BasicPlayerParameters(IPlayerController controller,string name,int colorNumber) : base(controller)
+        public PlayerParameters(string name,int colorNumber)
         {
             this.name = name;
             this.colorNumber = colorNumber;

@@ -53,17 +53,10 @@ namespace TreasureAndroid.UserInterface
                 PortalCount = 3,
                 SwampCount = 4,
                 SwampSize = 3,
+                PlayerCount = 4,
             };
 
-            gp.Players = new PlayerHelper[]
-                {
-                    new PlayerHelper(new PlayerParameters(new BotController(gp))),
-                    new PlayerHelper(new PlayerParameters(new BotController(gp))),
-                    new PlayerHelper(new PlayerParameters(new BotController(gp))),
-                    new PlayerHelper(new PlayerParameters(new BotController(gp))),
-                };
-
-            game = new Treasure.Game(gp);
+            game = new Treasure.Game(gp, new IPlayerController[] { new BotController(gp), new BotController(gp), new BotController(gp), new BotController(gp) }, new Random());
 
             game.InitializeField();
         }
@@ -96,7 +89,7 @@ namespace TreasureAndroid.UserInterface
             {
                 lastUpdate = gameTime.TotalGameTime;
                 var p = game.Step();
-                if (p != null)
+                if (p != -1)
                 {
                     GenerateGame();
                 }
@@ -207,7 +200,7 @@ namespace TreasureAndroid.UserInterface
             }
             for (int i = 0;i < game.field.players.Length;i++)
             {
-                Player p = game.field.players[i];
+                FieldPlayer p = game.field.players[i];
                 spriteBatch.Draw(atlasTexture, new Rectangle(p.X * a + bias.X, p.Y * a + bias.Y, a, a), new Rectangle(192 + b,64 + b,64 - bx2,64 - bx2), playersColors[i]);
             }
         }

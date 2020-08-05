@@ -103,36 +103,6 @@ namespace TreasureAndroid
             //playersList.Adapter = adapter;
         }
 
-        class C : Java.Lang.Object, ListView.IOnTouchListener
-        {
-            public IntPtr Handle => throw new NotImplementedException();
-
-            public void Dispose()
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool OnTouch(View v, MotionEvent e)
-            {
-                MotionEventActions action = e.Action;
-                switch (action)
-                {
-                    case MotionEventActions.Down:
-                        v.Parent.RequestDisallowInterceptTouchEvent(true);
-                        break;
-
-                    case MotionEventActions.Up:
-                        // Allow ScrollView to intercept touch events.
-                        v.Parent.RequestDisallowInterceptTouchEvent(false);
-                        break;
-                }
-
-                // Handle ListView touch events.
-                v.OnTouchEvent(e);
-                return true;
-            }
-        }
-
         public void AddPlayer(object sender, EventArgs e)
         {
             AddPlayer();
@@ -240,9 +210,10 @@ namespace TreasureAndroid
                 SwampCount = swampBar.Value,
                 SwampSize = swampSizeBar.Value,
                 Through = throughCheckBox.Checked,
+                PlayerCount = playersInfo.Count,
             };
 
-            PlayerHelper[] players = new PlayerHelper[playersInfo.Count];
+            IPlayerController[] controllers = new IPlayerController[playersInfo.Count];
 
             Dictionary<PlayerType, Func<IPlayerController>> dict = new Dictionary<PlayerType, Func<IPlayerController>>()
             {
@@ -250,14 +221,14 @@ namespace TreasureAndroid
                 {PlayerType.RandomBot, () => new BotController(gameParameters)},
             };
 
-            for (int i = 0; i < players.Length; i++)
-                players[i] = new PlayerHelper(new BasicPlayerParameters(dict[playersInfo[i].type](), playersInfo[i].name, i));
+            for (int i = 0; i < playersInfo.Count; i++)
+                controllers[i] = dict[playersInfo[i].type]();
 
-            gameParameters.Players = players;
-            Treasure.Game game = new Treasure.Game(gameParameters);
+            Treasure.Game game = new Treasure.Game(gameParameters, controllers,new Random());
             if (game.InitializeField())
             {
                 ActivityBridge.game = game;
+                ActivityBridge.playersParameters = Enumerable.Range(0,playersInfo.Count).Select(_ => new PlayerParameters(playersInfo[_].name, _)).ToArray();
                 //Finish();
                 StartActivity(typeof(GameActivity));
             }

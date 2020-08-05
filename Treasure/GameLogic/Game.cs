@@ -7,8 +7,7 @@ namespace Treasure
 {
     public class Game
     {
-        private readonly Player[] players;
-        private readonly IPlayerController[] playerControllers;
+        public readonly IPlayerController[] playerControllers;
         private readonly Random rnd;
         private readonly int seed;
 
@@ -16,69 +15,63 @@ namespace Treasure
         public GameField field;
 
         public GameParameters gameParameters;
+        public List<TurnInfo>[] ActionHistories { get => field.ActionHistories; }
 
         //public delegate void EventHandl(object sender, EventArgs args);
         public event EventHandler OnTurnDone;
 
-        public Game(GameParameters gameParameters)
+        public Game(GameParameters gameParameters, IPlayerController[] playerControllers, Random rnd)
         {
             this.gameParameters = gameParameters;
-            seed = (new Random()).Next();
-            rnd = new Random(seed);
-            players = gameParameters.Players.Select(_ => new Player(_)).ToArray();
-            playerControllers = gameParameters.Players.Select(_ => _.parameters.Controller).ToArray();
+            seed = rnd.Next();
+            this.rnd = new Random(seed);
+            this.playerControllers = playerControllers;
         }
 
-        public Game(GameParameters gameParameters, int seed)
+        public Game(GameParameters gameParameters, IPlayerController[] playerControllers, int seed)
         {
             this.gameParameters = gameParameters;
             this.seed = seed;
             rnd = new Random(seed);
-            players = gameParameters.Players.Select(_ => new Player(_)).ToArray();
-            playerControllers = gameParameters.Players.Select(_ => _.parameters.Controller).ToArray();
+            this.playerControllers = playerControllers;
         }
 
         public bool InitializeField()
         {
-            field = new GameField(gameParameters, players, rnd);
+            field = new GameField(gameParameters, rnd);
             return field.Generate();
         }        
 
-        public Player DoGameLoop(CancellationToken cancellationToken)
+        public int DoGameLoop(CancellationToken cancellationToken)
         {
-            Player winner = null;
-            while (winner == null)
+            int winner = -1;
+            while (winner == -1)
             {
-                for (int i = 0;i < players.Length;i++)
+                for (int i = 0;i < gameParameters.PlayerCount;i++)
                 {
-                    var player = players[i];
                     cancellationToken.ThrowIfCancellationRequested();                    
-                    var controller = player.playerHelper.parameters.Controller;
-                    List<TurnInfo>[] allTurns = players.Select(_ => _.playerHelper.actionHistory).ToArray();
+                    var controller = playerControllers[i];
                     PlayerAction m;
                     do
                     {
                         cancellationToken.ThrowIfCancellationRequested();
-                        m = controller.GetAction(cancellationToken, allTurns, field);  
+                        m = controller.GetAction(cancellationToken, ActionHistories, field);  
                     }
-                    while (!field.Update(player, m));
+                    while (!field.Update(i, m));
                     OnTurnDone.Invoke(this,new TurnDoneEventArgs());
                     winner = field.CheckWin();
-                    if (winner != null)
+                    if (winner != -1)
                         break;
                 }
             }
             return winner;
         }
 
-        public Player Step()//simpler way without threads; unsafe, only for only bots
+        public int Step()//simpler way without threads; unsafe, only for only bots
         {
             var silence = new CancellationToken();
-            var player = players[currentPlayer];
-            currentPlayer = (currentPlayer + 1) % players.Length;
-            var controller = player.playerHelper.parameters.Controller;
-            List<TurnInfo>[] allTurns = players.Select(_ => _.playerHelper.actionHistory).ToArray();
-            field.Update(player, controller.GetAction(silence, allTurns, field));
+            field.Update(currentPlayer, playerControllers[currentPlayer].GetAction(silence, ActionHistories, field));
+            currentPlayer = (currentPlayer + 1) % gameParameters.PlayerCount;
             return field.CheckWin();
         }
     }

@@ -10,11 +10,11 @@ namespace Treasure
         public Point position;
         public int intParam;
         public Tile tileParam;
-        public Player playerParam;
+        public FieldPlayer playerParam;
         public List<Stuff> stuff = new List<Stuff>();
         private GameField gameField;
 
-        public Tile(GameField gameField, Point position, TerrainType terrainType, int intParam = 0, Tile tileParam = null, Player playerParam = null, Orientation orientation = Orientation.None)
+        public Tile(GameField gameField, Point position, TerrainType terrainType, int intParam = 0, Tile tileParam = null, FieldPlayer playerParam = null, Orientation orientation = Orientation.None)
         {
             this.position = position;
             this.terrainType = terrainType;

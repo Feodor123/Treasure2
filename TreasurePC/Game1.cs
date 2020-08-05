@@ -25,15 +25,8 @@ namespace TreasurePC
                 PortalCount = 0,
                 SwampCount = 0,
                 SwampSize = 0,
-
-                Players = new PlayerHelper[]
-                {
-                    new PlayerHelper(new PlayerParameters(null)),
-                    new PlayerHelper(new PlayerParameters(null)),
-                    new PlayerHelper(new PlayerParameters(null)),
-                    new PlayerHelper(new PlayerParameters(null)),
-                }
-            }, rnd.Next());
+                PlayerCount = 4,
+            }, null,rnd);
             game.InitializeField();
             /*
             game.field[1, 1].terrainType = TerrainType.Field;
@@ -59,20 +52,14 @@ namespace TreasurePC
         {
             game = new Treasure.Game(new GameParameters()
             {
-                FieldWidth = 5,
-                FieldHeight = 10,
-                PortalCount = 3,
-                SwampCount = 4,
-                SwampSize = 3,
-
-                Players = new PlayerHelper[]
-                {
-                    new PlayerHelper(new PlayerParameters(null)),
-                    new PlayerHelper(new PlayerParameters(null)),
-                    new PlayerHelper(new PlayerParameters(null)),
-                    new PlayerHelper(new PlayerParameters(null)),
-                }
-            }, seed);
+                FieldWidth = 6,
+                FieldHeight = 6,
+                PortalCount = 0,
+                SwampCount = 0,
+                SwampSize = 0,
+                PlayerCount = 4,
+            }, null, rnd.Next());
+            game.InitializeField();
             bool b = false;
             while (!b)
                 b = game.InitializeField();

@@ -10,6 +10,6 @@ namespace Treasure
         public int SwampCount { get; set; } = 4;
         public int SwampSize { get; set; } = 3;
         public bool Through { get; set; } = false;
-        public PlayerHelper[] Players { get; set; }
+        public int PlayerCount { get; set; } = 2;
     }
 }

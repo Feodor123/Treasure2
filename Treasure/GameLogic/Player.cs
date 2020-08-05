@@ -2,7 +2,7 @@
 
 namespace Treasure
 {
-    public class Player
+    public class FieldPlayer
     {
         public int X
         {
@@ -21,17 +21,17 @@ namespace Treasure
         }
 
         public List<Stuff> stuff = new List<Stuff>();
-        public const int maxBulletCount = 3;
-        public const int startHomeBulletCount = 20;
         public Tile home;
         public Point position;
-        public int bulletCount = maxBulletCount;
-        public int homeBulletCount = startHomeBulletCount;
-        public PlayerHelper playerHelper;
+        readonly int maxBulletCount;
+        public int bulletCount;
+        public int homeBulletCount;
 
-        public Player(PlayerHelper playerHelper)
+        public FieldPlayer(int maxBulletCount, int startHomeBulletCount)
         {
-            this.playerHelper = playerHelper;
+            this.maxBulletCount = maxBulletCount;
+            bulletCount = maxBulletCount;
+            homeBulletCount = startHomeBulletCount;
         }
 
         public void UpdateBullets()
