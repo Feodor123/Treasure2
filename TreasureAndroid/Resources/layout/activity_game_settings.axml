@@ -3,202 +3,259 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-  <LinearLayout
-    android:orientation="vertical"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    <!--width-->
-    <TextView
-        android:id="@+id/width_bar_name"
-        android:text="@string/width"
-        android:layout_width="match_parent"
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/linear_layout">
+        <!--width-->
+            <TextView
+                android:id="@+id/width_bar_name"
+                android:text="@string/width"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                android:textSize="18sp" />
+            <RelativeLayout
+                android:id="@+id/width_bar_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/width_bar_name"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp">
+                <SeekBar
+                    android:id="@+id/width_bar"
+                    android:max="4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_toStartOf="@+id/width_bar_value" />
+                <TextView
+                    android:id="@+id/width_bar_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:text="123"
+                    android:textSize="18sp" />
+            </RelativeLayout>
+        <!--height-->
+            <TextView
+                android:id="@+id/height_bar_name"
+                android:text="@string/height"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/width_bar_layout"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:textSize="18sp" />
+            <RelativeLayout
+                android:id="@+id/height_bar_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/height_bar_name"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp">
+                <SeekBar
+                    android:id="@+id/height_bar"
+                    android:max="4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_toStartOf="@+id/height_bar_value" />
+                <TextView
+                    android:id="@+id/height_bar_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:text="123"
+                    android:textSize="18sp" />
+            </RelativeLayout>
+        <!--portals-->
+            <TextView
+                android:id="@+id/portal_bar_name"
+                android:text="@string/portal_count"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/height_bar_layout"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                android:textSize="18sp" />
+            <RelativeLayout
+                android:id="@+id/portal_bar_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/portal_bar_name"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp">
+                <SeekBar
+                    android:id="@+id/portal_bar"
+                    android:max="3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_toStartOf="@+id/portal_bar_value" />
+                <TextView
+                    android:id="@+id/portal_bar_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:text="123"
+                    android:textSize="18sp" />
+            </RelativeLayout>
+        <!--players-->
+        <!--<TextView
+            android:id="@+id/player_bar_name"
+            android:text="@string/player_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/portal_bar_layout"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:textSize="18sp" />
+        <RelativeLayout
+            android:id="@+id/player_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/player_bar_name"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp">
+            <SeekBar
+                android:id="@+id/player_bar"
+                android:max="3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@+id/player_bar_value" />
+            <TextView
+                android:id="@+id/player_bar_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:text="123"
+                android:textSize="18sp" />
+        </RelativeLayout>-->
+        <!--swamps-->
+            <TextView
+                android:id="@+id/swamp_bar_name"
+                android:text="@string/swamp_count"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/player_bar_layout"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                android:textSize="18sp" />
+            <RelativeLayout
+                android:id="@+id/swamp_bar_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/swamp_bar_name"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp">
+                <SeekBar
+                    android:id="@+id/swamp_bar"
+                    android:max="3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_toStartOf="@+id/swamp_bar_value" />
+                <TextView
+                    android:id="@+id/swamp_bar_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:text="123"
+                    android:textSize="18sp" />
+            </RelativeLayout>
+        <!--swamp size-->
+            <TextView
+                android:id="@+id/swamp_size_bar_name"
+                android:text="@string/swamp_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/swamp_bar_layout"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                android:textSize="18sp" />
+            <RelativeLayout
+                android:id="@+id/swamp_size_bar_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/swamp_size_bar_name"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp">
+                <SeekBar
+                    android:id="@+id/swamp_size_bar"
+                    android:max="3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_toStartOf="@+id/swamp_size_bar_value" />
+                <TextView
+                    android:id="@+id/swamp_size_bar_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:text="123"
+                    android:textSize="18sp" />
+            </RelativeLayout>
+        <!--through option-->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp">
+                <TextView
+                    android:id="@+id/through_checkbox_name"
+                    android:layout_gravity="left"
+                    android:text="@string/through"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp" />
+                <CheckBox
+                    android:id="@+id/through_check_box"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_gravity="right" />
+            </FrameLayout>
+        <!--add/remove player-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <Button
+                    android:id="@+id/add_player_button"
+                    android:text="@string/add_player"
+                    android:layout_height="wrap_content"
+                    android:layout_width="fill_parent"
+                    android:layout_marginRight="-3dp"
+                    android:layout_weight="1" />
+                <Button
+                    android:id="@+id/remove_player_button"
+                    android:text="@string/remove_player"
+                    android:layout_height="wrap_content"
+                    android:layout_width="fill_parent"
+                    android:layout_marginLeft="-3dp"
+                    android:layout_weight="1" />
+            </LinearLayout>
+            <treasureandroid.CustomListView
+                android:id="@android:id/list"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp" />
+        </LinearLayout>
+    </ScrollView>
+<!--start button-->
+    <Button
+        android:id="@+id/start_new_game"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="10dp"
-        android:textSize="18sp" />
-    <RelativeLayout
-        android:id="@+id/width_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/width_bar_name"
-        android:layout_marginTop="10dp">
-      <SeekBar
-          android:id="@+id/width_bar"
-          android:max="4"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_alignParentStart="true"
-          android:layout_toStartOf="@+id/width_bar_value" />
-      <TextView
-          android:id="@+id/width_bar_value"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_alignParentEnd="true"
-          android:text="123"
-          android:textSize="18sp" />
-    </RelativeLayout>
-    <!--height-->
-    <TextView
-        android:id="@+id/height_bar_name"
-        android:text="@string/height"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/width_bar_layout"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="10dp"
-        android:textSize="18sp" />
-    <RelativeLayout
-        android:id="@+id/height_bar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/height_bar_name"
-        android:layout_marginTop="10dp">
-      <SeekBar
-          android:id="@+id/height_bar"
-          android:max="4"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_alignParentStart="true"
-          android:layout_toStartOf="@+id/height_bar_value" />
-      <TextView
-          android:id="@+id/height_bar_value"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_alignParentEnd="true"
-          android:text="123"
-          android:textSize="18sp" />
-    </RelativeLayout>
-    <!--portals-->
-    <TextView
-        android:id="@+id/portal_bar_name"
-        android:text="@string/portal_count"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/height_bar_layout"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="10dp"
-        android:textSize="18sp" />
-    <RelativeLayout
-        android:id="@+id/portal_bar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/portal_bar_name"
-        android:layout_marginTop="10dp">
-      <SeekBar
-          android:id="@+id/portal_bar"
-          android:max="3"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_alignParentStart="true"
-          android:layout_toStartOf="@+id/portal_bar_value" />
-      <TextView
-          android:id="@+id/portal_bar_value"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_alignParentEnd="true"
-          android:text="123"
-          android:textSize="18sp" />
-    </RelativeLayout>
-    <!--players-->
-    <TextView
-        android:id="@+id/player_bar_name"
-        android:text="@string/player_count"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/portal_bar_layout"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="10dp"
-        android:textSize="18sp" />
-    <RelativeLayout
-        android:id="@+id/player_bar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/player_bar_name"
-        android:layout_marginTop="10dp">
-      <SeekBar
-          android:id="@+id/player_bar"
-          android:max="3"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_alignParentStart="true"
-          android:layout_toStartOf="@+id/player_bar_value" />
-      <TextView
-          android:id="@+id/player_bar_value"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_alignParentEnd="true"
-          android:text="123"
-          android:textSize="18sp" />
-    </RelativeLayout>
-    <!--swamps-->
-    <TextView
-        android:id="@+id/swamp_bar_name"
-        android:text="@string/swamp_count"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/player_bar_layout"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="10dp"
-        android:textSize="18sp" />
-    <RelativeLayout
-        android:id="@+id/swamp_bar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/swamp_bar_name"
-        android:layout_marginTop="10dp">
-      <SeekBar
-          android:id="@+id/swamp_bar"
-          android:max="3"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_alignParentStart="true"
-          android:layout_toStartOf="@+id/swamp_bar_value" />
-      <TextView
-          android:id="@+id/swamp_bar_value"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_alignParentEnd="true"
-          android:text="123"
-          android:textSize="18sp" />
-    </RelativeLayout>
-    <!--swamp size-->
-    <TextView
-        android:id="@+id/swamp_size_bar_name"
-        android:text="@string/swamp_size"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/swamp_bar_layout"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="10dp"
-        android:textSize="18sp" />
-    <RelativeLayout
-        android:id="@+id/swamp_size_bar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/swamp_size_bar_name"
-        android:layout_marginTop="10dp">
-      <SeekBar
-          android:id="@+id/swamp_size_bar"
-          android:max="3"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_alignParentStart="true"
-          android:layout_toStartOf="@+id/swamp_size_bar_value" />
-      <TextView
-          android:id="@+id/swamp_size_bar_value"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_alignParentEnd="true"
-          android:text="123"
-          android:textSize="18sp" />
-    </RelativeLayout>
-  </LinearLayout>
-  <!--start button-->
-  <Button
-      android:id="@+id/start_new_game"
-      android:layout_height="wrap_content"
-      android:layout_width="match_parent"
-      android:layout_gravity="bottom"
-      android:text="@string/new_game" />
+        android:layout_gravity="bottom"
+        android:text="@string/new_game"
+        android:clickable="false" />
 </FrameLayout>

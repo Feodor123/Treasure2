@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Game rules</h2>
+
+<p>All players are trying to find treasure on the field and bring it to home. They act one by one, moving or shooting in one of four directions. You can see information about all (not only your) actions and it's results and use it to draw map of gamefield.</p>
+
+<h3>Gamefield</h3>
+<p>Gamefield is rectangle, consisting from tiles of different types. Also there are walls between any tiles and around gamefield.</p>
+
+<h4>Tiles</h4>
+<h5>Field tile</h5>
+<p>Usual tile. When you step on it, you got <q>field</q> message.</p>
+
+<h5>Home tile</h5>
+<p>It's your base - place, where you respawn after death, where you restore your ammo and where you should bring treasure.As tile it similar to field - when you step on it you got 
+info about owner of it.</p>
+
+<h5>Water tile</h5>
+<p>Part of the most coward structure of gamefield - river. It's curving line from water tiles, flowing from north to south and ending by grate - wall on the bottom of gamefield, under last river tile. First tile is on top of gamefield and last is on bottom. Every tile (excluding first and last) have <b>exactly two</b> neighbours: next and previous tiles. Because river flow downward, next tile can't be to the north.</p>
+
+<img src="Img1.png">
+<img src="Img2.png">
+<img src="Img3.png">
+  
+<p>When your step into river, you got swepted away by N tiles adrift (N - <q>river flow</q> parameter).You get <q>river</q> message for every visited tile.If you reach last tile before you moved by river N times, you stop and get one message <q>grate</q>.</p>
+
+<figure>
+  <img src="Img4.png">
+  <figcaption><q>River flow</q> = 2; <q>River-river-river</q> message</figcaption>
+</figure>
+<figure>
+  <img src="Img5.png">
+  <figcaption><q>River flow</q> = 2; <q>River-river-grate</q> message</figcaption>
+</figure>
+
+<h5>Swamp tile</h5>
+<p>Part of other structure - swamp. Swamp is bloc from <b>exactly N</b> swamp tiles (N - <q>swamp size</q> parameter). Only side-neighbours become part of one block; diagonally-located tiles don't merge.</P>
+
+<figure>
+  <img src="Img6.png">
+  <img src="Img7.png">
+  <img src="Img8.png">
+  <figcaption><q>Swamp size</q> = 3</figcaption>
+</figure>
+
+<p>You can't walk on swamp, so on step you just get <q>swamp</q> message and stay in place.</p>
+
+<h5>Portal tile</h5>
+<p>It is N portals on gamefield, numbered from 1 to N (N - <q>portal count</q> parameter). When you step on it, you teleport to next portal (or to first from last) and get messages about both visited tiles.</p>
+
+<h4>Walls</h4>
+<p>It is three types of walls: breakable, unbreakable and grate. When you go to it, you get message (<q>grate</q> for grate and <q>wall</q> for other types) and stay in place. Breakable wall can be found everywhere excludung gamefield edge and borders between water tiles.It can be broken (suddenly!). Unbreakable is around gamefield; grate replace it under last river tile (and, maybe, above first, but you can't check it, bugaga). This types can't be broken.</p>
+<h3>Item</h3>
+<h4>Treasure</h4>
+<p>Spawn only one, only on field. Bring it to your home to win.</p>
+<h3>Shooting</h3>
+<p>In addition to moving you can shoot in one of four directions. This action can be  performed only if you have bullets (judging by the effect, it's rockets), which can be restored in <b>your</b> home.Bullet move until first obstacle: if it's player, he die, if it's breakable wall - it break.</p>
+<h3>Death</h3>
+<p>Death can be caused by bullet or by other player who step on you while was moving. You resurge in your home and on start of your turn get <q>death</q> message (you can get multiple messages if rivals kill you again before your turn). All your item drop on death tile.</p>
+<h3>Addition settings</h3>
+<h4><q>Throught</q> option</h4>
+<p>Gamefield looped: it hasn't edges. Unbreakable walls and grate are missing. River hasn't start and end tiles - it looped too.</p>
+
+</body>
+</html>

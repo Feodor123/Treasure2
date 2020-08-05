@@ -266,11 +266,6 @@ namespace Treasure
 
                     FindCandidates(p);
                 }
-                
-                if (swamp.Count != 3)
-                {
-
-                }
 
 
                 // Apply results
@@ -417,8 +412,10 @@ namespace Treasure
 
         private bool CondensationCheck()
         {
-            Dictionary<Point, Node> dict = new Dictionary<Point, Node>();
-            dict.Add(treasurePos,new Node(treasurePos,this));
+            Dictionary<Point, Node> dict = new Dictionary<Point, Node>
+            {
+                { treasurePos, new Node(treasurePos, this) }
+            };
             dict[treasurePos].Go(dict);
             int i = dict[treasurePos].Go2();
             if (i < dict.Count)

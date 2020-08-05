@@ -20,11 +20,11 @@ namespace TreasurePC
         {
             game = new Treasure.Game(new GameParameters()
             {
-                FieldWidth = 5,
-                FieldHeight = 10,
-                PortalCount = 3,
-                SwampCount = 4,
-                SwampSize = 3,
+                FieldWidth = 6,
+                FieldHeight = 6,
+                PortalCount = 0,
+                SwampCount = 0,
+                SwampSize = 0,
 
                 Players = new PlayerHelper[]
                 {
@@ -35,6 +35,24 @@ namespace TreasurePC
                 }
             }, rnd.Next());
             game.InitializeField();
+            /*
+            game.field[1, 1].terrainType = TerrainType.Field;
+            game.field[2, 1].terrainType = TerrainType.Field;
+            game.field[3, 1].terrainType = TerrainType.Field;
+            game.field[4, 1].terrainType = TerrainType.Water;
+            game.field[1, 2].terrainType = TerrainType.Field;
+            game.field[2, 2].terrainType = TerrainType.Water;
+            game.field[3, 2].terrainType = TerrainType.Water;
+            game.field[4, 2].terrainType = TerrainType.Water;
+            game.field[1, 3].terrainType = TerrainType.Field;
+            game.field[2, 3].terrainType = TerrainType.Water;
+            game.field[3, 3].terrainType = TerrainType.Water;
+            game.field[4, 3].terrainType = TerrainType.Field;
+            game.field[1, 4].terrainType = TerrainType.Field;
+            game.field[2, 4].terrainType = TerrainType.Field;
+            game.field[3, 4].terrainType = TerrainType.Water;
+            game.field[4, 4].terrainType = TerrainType.Field;
+            */
         }
 
         public void NewTGame(int seed)

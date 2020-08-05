@@ -1,4 +1,8 @@
-﻿namespace Treasure
+﻿using System;
+using System.ComponentModel;
+using System.Reflection;
+
+namespace Treasure
 {
     public enum TerrainType
     {

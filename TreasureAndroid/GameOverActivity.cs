@@ -41,6 +41,7 @@ namespace TreasureAndroid
         }
         private void NewGame(object sender, EventArgs e)
         {
+            Finish();
             StartActivity(typeof(GameSettingsActivity));
         }
     }

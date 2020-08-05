@@ -147,14 +147,28 @@ namespace TreasureAndroid
                         strs.Add($"{tf.actions[k].action.type.ToString()} {tf.actions[k].action.direction.ToString()}");
                         foreach (var t in tf.actions[k].tiles)
                         {
-                            string str = t.moveResult.ToString();
-                            if (t.intParam != -1)
-                                str += $" {t.intParam}";
-                            if (t.stuff.Count != 0)
+                            if (t.moveResult == MoveResult.Home)
                             {
-                                str += " with " + string.Join(", ",t.stuff.Select(_ => _.type.ToString()));
+                                if (t.intParam - 1 == j)
+                                {
+                                    strs.Add("Your Home");
+                                }
+                                else
+                                {
+                                    strs.Add($"{(players[t.intParam - 1].parameters as BasicPlayerParameters).name}\'s Home");
+                                }
                             }
-                            strs.Add(str);
+                            else
+                            {
+                                string str = t.moveResult.ToString();
+                                if (t.intParam != -1)
+                                    str += $" {t.intParam}";
+                                if (t.stuff.Count != 0)
+                                {
+                                    str += " with " + string.Join(", ", t.stuff.Select(_ => _.type.ToString()));
+                                }
+                                strs.Add(str);
+                            }
                         }
                         k++;
                     }

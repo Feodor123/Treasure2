@@ -20,6 +20,7 @@ namespace TreasureAndroid.UserInterface
     public class MainActivity : AndroidGameActivity
     {
         private Button playButton;
+        private Button rulesButton;
 
         private View background;
 
@@ -35,6 +36,7 @@ namespace TreasureAndroid.UserInterface
 
 
             playButton = FindViewById<Button>(Resource.Id.start_game);
+            rulesButton = FindViewById<Button>(Resource.Id.game_rules);
             var root = FindViewById<FrameLayout>(Resource.Id.root);         
 
             background = (View)g.Services.GetService(typeof(View));
@@ -44,6 +46,7 @@ namespace TreasureAndroid.UserInterface
             root.AddView(background);
 
             playButton.Click += PlayButton_Click;
+            rulesButton.Click += RulesButton_Click;
 
             Thread thread = new Thread(() => g.Run());
             thread.Start();
@@ -52,6 +55,11 @@ namespace TreasureAndroid.UserInterface
         private void PlayButton_Click(object sender, EventArgs e)
         {
             StartActivity(typeof(GameSettingsActivity));
+            //new Android.Content.Intent(this, typeof(GameActivity));
+        }
+        private void RulesButton_Click(object sender, EventArgs e)
+        {
+            StartActivity(typeof(RulesActivity));
             //new Android.Content.Intent(this, typeof(GameActivity));
         }
     }
